@@ -7,9 +7,9 @@ import "../styles/Header.css"
 function Header() {
     return (
         <header className='header'>
-            <Link to="/">
+            <a href="/">
                 <h1>My App</h1>
-            </Link>
+            </a>
             <div className='btns-container'>
                 <Link to="/student-login">
                     <button>Student Login</button>

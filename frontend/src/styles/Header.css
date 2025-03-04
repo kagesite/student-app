@@ -6,8 +6,12 @@
     background-color: #e0e0e0;
 }
 
+.header a {
+    text-decoration: none;
+    color: black;
+}
+
 .btns-container {
-    background-color: lightblue;
     padding: 10px;
     display: flex;
     gap: 20px;
