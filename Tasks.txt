@@ -1,0 +1,10 @@
+Student registration app
+
+Features:
+
+    Signup & Login (Home page, "/")
+
+    Dashboard
+
+    registration
+
