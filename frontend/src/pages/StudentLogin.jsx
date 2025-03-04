@@ -5,7 +5,26 @@ function StudentLogin() {
     return (
         <>
             <Header />
-            <h2>Student Login Page</h2>
+            <div className='form-container'>
+                <h2>Student Login</h2>
+                <form>
+                    <div>
+                        <label>Email:</label>
+                        <input
+                            type="email"
+                            placeholder='Email'
+                        />
+                    </div>
+                    <div>
+                        <label>Password:</label>
+                        <input
+                            type="password"
+                            placeholder='Password'
+                        />
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
         </>
     )
 }
