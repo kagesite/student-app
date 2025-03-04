@@ -1,0 +1,29 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #e0e0e0;
+}
+
+.btns-container {
+    background-color: lightblue;
+    padding: 10px;
+    display: flex;
+    gap: 20px;
+}
+
+.btns-container button {
+    background-color: gray;
+    color: white;
+    padding: 14px 10px;
+    border: 2px solid black;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.btns-container button:hover {
+    background-color: #e0e0e0;
+    color: black;
+}
