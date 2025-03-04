@@ -2,8 +2,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
     background-color: #e0e0e0;
+    height: 10vh;
+    padding: 0 30px;
+    /* margin-bottom: 40px; */
+}
+
+.header h1 {
+    font-size: 36px;
 }
 
 .header a {
@@ -14,13 +20,13 @@
 .btns-container {
     padding: 10px;
     display: flex;
-    gap: 20px;
+    gap: 30px;
 }
 
 .btns-container button {
-    background-color: gray;
-    color: white;
-    padding: 14px 10px;
+    font-size: 18px;
+    background-color: white;
+    padding: 10px 16px;
     border: 2px solid black;
     border-radius: 12px;
     cursor: pointer;
@@ -28,6 +34,7 @@
 }
 
 .btns-container button:hover {
-    background-color: #e0e0e0;
-    color: black;
+    background-color: #094a39;
+    color: white;
+    border: 2px solid #094a39;
 }
