@@ -1,6 +1,6 @@
 # Student Registration App
 
-## Features:
+# Features:
 
 - **Signup & Login** (Home page, `/`)
 - **Dashboards**
@@ -8,7 +8,7 @@
 
 <!-- ## Frontend: -->
 
-## Signup & Login:
+# Signup & Login:
 ### STUDENTS:
 #### Signup
 - Input for name, email, and password.
@@ -26,7 +26,7 @@
 - Admins should have a seperate login that when logged in, takes them to the Admins Dashboard.
 - This route will be a login only route where we will have a preset Admin login.
 
-## Dashboards
+# Dashboards
 ### STUDENTS:
 - Student dashboard should display all courses.
 - Each course should be clickable and be able to display all the info for that course.
