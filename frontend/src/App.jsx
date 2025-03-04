@@ -1,11 +1,18 @@
 import React from 'react'
-import UserSignup from './components/UserSignup'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import UserSignup from './components/StudentSignup'
+import StudentLogin from './pages/StudentLogin';
+import AdminLogin from './pages/AdminLogin';
+
 
 function App() {
     return (
-        <div>
-            <UserSignup />
-        </div>
+        <Routes>
+            <Route path="/" element={<UserSignup />} />
+
+            <Route path="student-login" element={<StudentLogin />} />
+            <Route path="admin-login" element={<AdminLogin />} />
+        </Routes>
     )
 }
 
