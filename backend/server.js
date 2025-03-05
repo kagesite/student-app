@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const app = express();
 const PORT = process.env.PORT || 3001;
 const pool = require('./db');
+const jwt = require('jsonwebtoken');
 
 const path = require('path');
 
@@ -26,30 +27,51 @@ app.get('/', (req, res) => {
 
 // Route for student signup
 app.post('/student/signup', async (req, res) => {
-    const { name, email, password } = req.body;
-
-    console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
-
+    const { username, firstName, lastName, email, password } = req.body;
 
     try {
-
-        const existingUser = await pool.query('SELECT * FROM testStu WHERE email = $1', [email]);
+        const existingUser = await pool.query('SELECT * FROM testStudents WHERE email = $1', [email]);
         if (existingUser.rows.length > 0) {
-            return res.status(400).json({ message: "Email already in use" });
+            return res.status(400).json({ message: 'Email already in use' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-
         const newStudent = await pool.query(
-            'INSERT INTO testStu (name, email, password) VALUES ($1, $2, $3) RETURNING *', [name, email, hashedPassword]
-        )
+            'INSERT INTO testStudents (username, first_name, last_name, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *', [username, firstName, lastName, email, hashedPassword]
+        );
 
-        res.status(201).json({ mesage: "Student registered sucessfully", user: newStudent.rows[0] });
+        res.status(201).json({ message: "Student Registered Successfully:", user: newStudent.rows[0] });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "server error" });
+        res.status(500).json({ message: "Server error" });
     }
+})
+
+app.post('/student/login'), async (req, res) => {
+    const { email, password } = req.body
+
+    try {
+        const student = await pool.query('SELECT * FROM testStudents WHERE email = $1', [email]);
+        if (student.rows.length === 0) {
+            return res.status(400).json({ message: "Invalid email or passowrd" });
+        }
+        
+        // Generate JWT token
+        const token = jwt.sign({ id: student.rows[0].id, role: 'student' }, process.env.JWT_SECRET, {
+            expiresIn: '10m'
+        });
+
+        res.json({ message: "Login successful", token});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+app.get('/student/dashboard', async (req, res) => {
+
+
 })
 
 
