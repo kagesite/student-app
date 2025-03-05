@@ -1,13 +1,19 @@
 import React, { useState } from 'react'
-import Header from '../components/Header'
-import "../styles/StudentSignup.css"
-import "../styles/Form.css"
-
+import Header from "../components/Header";
 
 function StudentSignup() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [formData, setFormData] = useState({
+        username: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+    })
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -15,63 +21,80 @@ function StudentSignup() {
         fetch('http://localhost:3001/student/signup', {
             method: "POST",
             headers: {
-                "content-type": "application/json",
+                "Content-type": "application/json",
             },
-            body: JSON.stringify({
-                name,
-                email,
-                password
-            })
+            body: JSON.stringify(formData),
         })
             .then(response => response.json())
-            .then(data => {
-                console.log(`Success: ${data}`);
-            })
-            .catch(error => console.error("Error sending data", error));
+            .catch(error => console.error("Error posting data"));
 
-        setName("");
-        setEmail("");
-        setPassword("");
+
+        setFormData({
+            username: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+        })
+
     }
-
-
 
     return (
         <div>
             <Header />
-            <div className="form-container">
-                <h2>Student Signup</h2>
-                <form onSubmit={(e) => handleSubmit(e)}>
-                    <div>
-                        <label>Name:</label>
-                        <input
-                            type="text"
-                            placeholder='Name'
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Email:</label>
-                        <input
-                            type="email"
-                            placeholder='Email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Password:</label>
-                        <input
-                            type="password"
-                            placeholder='Password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <button type="submit">Get Started</button>
-                </form>
-            </div>
+            <form onSubmit={(e) => handleSubmit(e)}>
+                <div>
+                    <label htmlFor="">Username</label>
+                    <input
+                        type="text"
+                        name='username'
+                        onChange={(e) => handleChange(e)}
+                        value={formData.username}
+                        placeholder='Username'
+                    />
+                </div>
+                <div>
+                    <label htmlFor="">First Name</label>
+                    <input
+                        type="text"
+                        name='firstName'
+                        onChange={(e) => handleChange(e)}
+                        value={formData.firstName}
+                        placeholder='First name'
+                    />
+                </div>
+                <div>
+                    <label htmlFor="">Last Name</label>
+                    <input
+                        type="text"
+                        name='lastName'
+                        onChange={(e) => handleChange(e)}
+                        value={formData.lastName}
+                        placeholder='Last name'
+                    />
+                </div>
+                <div>
+                    <label htmlFor="">Email</label>
+                    <input
+                        type="text"
+                        name='email'
+                        onChange={(e) => handleChange(e)}
+                        value={formData.email}
+                        placeholder='Email'
+                    />
+                </div>
+                <div>
+                    <label htmlFor="">Password</label>
+                    <input
+                        type="password"
+                        name='password'
+                        onChange={(e) => handleChange(e)}
+                        value={formData.password}
+                        placeholder='Password'
+                    />
+                </div>
+                <button type='submit'>Signup</button>
+            </form>
         </div>
     )
 }
