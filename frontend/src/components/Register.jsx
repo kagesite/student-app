@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { data, Link } from "react-router-dom"
 import { useState } from "react";
 
 export default function Register() {
@@ -35,11 +35,25 @@ export default function Register() {
                 "Content-Type":"application/json"
             }
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if(response.status === 500) {
+                setMessage({type: "error", text: "Server Error"});
+            }
+            else {
+                setMessage({type: "success", text: "Sucessful Account Creation"});
+            }
+
+            return response.json()
+        })
         .then((data) => {
+
             console.log(data);
 
-            setMessage({type: "success", text: data.message});
+
+
+            setTimeout(() => {
+                setMessage({type: "invisible-msg", text: ""});
+            }, 5000);
 
             setUserDetails({
                 username: "",
@@ -50,11 +64,6 @@ export default function Register() {
                 telephone: "",
                 address: ""
             });
-
-
-            setTimeout(() => {
-                setMessage({type: "invisible-msg", text: ""});
-            }, 5000);
         })
         .catch((err) => {
             console.log(err);
