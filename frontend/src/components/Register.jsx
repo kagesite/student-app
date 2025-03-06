@@ -28,7 +28,7 @@ export default function Register() {
         event.preventDefault();
         console.log(userDetails);
 
-        fetch("http://localhost:3001/register", {
+        fetch("http://localhost:3001/students/create", {
             method: "POST",
             body: JSON.stringify(userDetails),
             headers: {
@@ -38,6 +38,11 @@ export default function Register() {
         .then((response) => {
             if(response.status === 500) {
                 setMessage({type: "error", text: "Server Error"});
+                resolve();
+            }
+            else if (response.status === 400) {
+                setMessage({type: "error", text: "Email Already in Use"});
+                resolve();
             }
             else {
                 setMessage({type: "success", text: "Sucessful Account Creation"});
@@ -80,7 +85,7 @@ export default function Register() {
                 <h1>Register</h1>
 
                 <input className="register-input" type="text"  onChange={handleInput} placeholder="Enter Username" name="username" value={userDetails.username} required></input>
-                <input className="register-input" type="text"  onChange={handleInput} placeholder="Enter Frist Name" name="firstname" value={userDetails.firstname} required></input>
+                <input className="register-input" type="text"  onChange={handleInput} placeholder="Enter First Name" name="firstname" value={userDetails.firstname} required></input>
                 <input className="register-input" type="text"  onChange={handleInput} placeholder="Enter Last Name" name="lastname" value={userDetails.lastname} required></input>
                 <input className="register-input" type="email" onChange={handleInput} placeholder="Enter Email" name="email" value={userDetails.email} required></input>
                 <input className="register-input" type="password" onChange={handleInput} placeholder="Enter Password" name="password" value={userDetails.password} required minLength={8}></input>

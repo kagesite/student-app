@@ -25,7 +25,7 @@ export default function Login() {
         event.preventDefault();
         console.log(userCred);
 
-        fetch("http://localhost:5174/login", {
+        fetch("http://localhost:3001/students/login", {
             method: "POST",
             body: JSON.stringify(userCred),
             headers: {
