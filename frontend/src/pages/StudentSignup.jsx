@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import Header from "../components/Header";
 import '../styles/StudentSignup.css';
 import '../styles/Form.css';
+import TestFooter from '../components/TestFooter';
 
 function StudentSignup() {
     return (
         <div>
             <Header />
             <div className='form-container'>
+                <h2 className='head-label'>Student Signup</h2>
                 <form>
                     <div>
                         <label htmlFor="">Username</label>
@@ -68,6 +70,8 @@ function StudentSignup() {
                     {/* {message && <>{message}</>} */}
                 </form>
             </div>
+            {/* TEST FOOTER IS TEMPORARY */}
+            <TestFooter />
         </div>
     )
 }
