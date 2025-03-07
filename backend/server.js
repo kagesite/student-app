@@ -17,25 +17,24 @@ app.use(express.static(path.resolve(__dirname, "../client/dist")));
 // Handle requests from client side
 
 // Creates a new student in the database | Returns a sucessful or unsucessful message
-// Todo: check if username is already in use
 app.post('/students/create', async (req, res) => {
 
     console.log(req.body);
     
     const { username, email, password, firstname, lastname, telephone, address } = req.body;
 
-    const studentObject = req.body;
-
-    console.log(`Firstname: ${studentObject.firstname}`);
-
-    console.log(`Name: ${username}, Email: ${email}, Password: ${password}, Firstname: ${firstname}, Lastname: ${lastname}, Telephone: ${telephone}, Address: ${address}`);
-
+    //const studentDetails = req.body;
 
     try {
         const existingUser = await pool.query('SELECT * FROM students WHERE email = $1', [email]);
+        const checkUsername = await pool.query('SELECT * FROM students WHERE username = $1', [username]);
 
         if (existingUser.rows.length > 0) {
             return res.status(400).json({ message: "Email already in use"});
+        }
+
+        if (checkUsername.rows.length > 0) {
+            return res.status(400).json({ message: "Username already in use"});
         }
 
         
@@ -62,24 +61,23 @@ app.post('/students/create', async (req, res) => {
 
 
 // Todo: add jwt for authorization and return a token in an object with the success message
-// Todo: Check if they are either logging in with their email or username
+// Todo: make sure on the frontend that a user cannot create a username with an @ symbol
 app.get('/students/login', async (req, res) => {
 
     let userCred = req.body;
 
     try {
-        const existingUser = await pool.query('SELECT * FROM students WHERE email = $1', [userCred.email]);
-        const existingUserUsername = await pool.query('SELECT * FROM students WHERE username = $1', userCred.username);
 
-        if (existingUser.rows[0].email !== userCred.email) {
-            return res.status(400).json({ message: "Incorrect Email"});
-        }
-        else if (existingUser.rows[0].username !== userCred.username) {
-            return res.status(400).json({message: "Incorrect Username"})
-        }
-        else {
+        const hasAtSymbol = userCred.username.includes("@");
+
+        if (hasAtSymbol) {
+            const existingUser = await pool.query('SELECT * FROM students WHERE email = $1', [userCred.email]);
+
+            if (existingUser.rows.length <= 0) {
+                return res.status(400).json({message: "No Registered Account with that Email"});
+            }
+
             bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
-                console.log(result);
                 
                 if (result === true) {
                     res.send({message: "Login Sucess"});
@@ -88,6 +86,25 @@ app.get('/students/login', async (req, res) => {
                     res.status(403).send({message: "Incorrect Password"});
                 }
             });
+
+        }
+        else {
+            const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [userCred.username]);
+            
+            if (existingUser.rows.length <= 0) {
+                return res.status(400).json({message: "No Registered Account with that Username"});
+            }
+        
+            bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
+                
+                if (result === true) {
+                    res.send({message: "Login Sucess"});
+                }
+                else {
+                    res.status(403).send({message: "Incorrect Password"});
+                }
+            });
+    
         }
     } catch (error) {
         console.log(error);
@@ -169,33 +186,59 @@ app.get('/students/email/:email', async (req, res) => {
     
 });
 
-// Todo: check if updated username or email conflicts with already existing data in the database. There can be no duplicate usernames and emails.
-// Todo: If they are changing their password, you need to encrypt their new password.
-// Todo: Is there are better way of dynamically updating a student user without receving the whole object and updating everything?
+// Updates specified student user details by student_id | Returns a succesful update message and updated student object
 app.put('/students/update/:student_id', async (req, res) => {
 
-    const { username, email, password, firstname, lastname, telephone, address} = req.body;
-
-    if (password !== undefined) {
-
-
-
-    }
-    else {
-        res.status(400).json({message: "password is undefined"});
-    }
-
+    const updateObject = req.body;
+    const studentArray = Object.entries(updateObject);
 
     try {
 
-        const existingUser = await pool.query('UPDATE students SET username = $1, email = $2, password = $3, firstname = $4, lastname = $5, telephone = $6, address = $7 WHERE student_id = $8 RETURNING *', 
-            [username, email, password, firstname, lastname, telephone, address, req.params.student_id]);
+        const checkEmail = await pool.query('SELECT * FROM students WHERE email = $1', [updateObject.email]);
+        const checkUsername = await pool.query('SELECT * FROM students WHERE username = $1', [updateObject.username]);
+        const checkStudentId = await pool.query('SELECT * FROM students WHERE student_id = $1', [req.params.student_id]);
 
-        if (existingUser.rows.length < 0) {
+        if (checkEmail.rows.length > 0) {
+            return res.status(400).json({ message: "Email already in use"});
+        }
+
+        if (checkUsername.rows.length > 0) {
+            return res.status(400).json({ message: "Username already in use"});
+        }
+
+        if (checkStudentId.rows.length <= 0) {
             return res.status(400).json({ message: "Email/User not Found"});
         }
 
-        res.status(200).json({message: "Update Succesful", student: existingUser.rows[0]});    
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(password, salt, async (err, hash) => {
+                
+                hashedPassword = hash;
+
+                studentArray.forEach((subArray) => {
+
+                    console.log(subArray);
+
+                    if (subArray.includes('password')) {
+                        subArray[1] = hashedPassword;
+                    }
+                
+                })
+
+                for (let i = 0; i < studentArray.length; i++) {
+                    if (studentArray[i][0] !== undefined) {
+                        await pool.query('UPDATE students SET ' + studentArray[i][0] + '= $1 WHERE student_id = $2 RETURNING *', [studentArray[i][1], req.params.student_id]);  
+                    }
+                    else {
+                        console.log("error within Student Array loop");
+                    }
+                }
+
+                const updatedStudentUser = await pool.query('SELECT * FROM students WHERE student_id = $1', [req.params.student_id]);
+                return res.status(200).json({message: "Update Succesful", student: updatedStudentUser.rows[0]});
+                
+            });
+        });
 
     } catch (error) {
         console.log(error);
