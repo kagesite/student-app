@@ -59,7 +59,6 @@ app.post('/students/create', async (req, res) => {
     }
 });
 
-
 // Todo: add jwt for authorization and return a token in an object with the success message
 // Todo: make sure on the frontend that a user cannot create a username with an @ symbol
 app.get('/students/login', async (req, res) => {
@@ -113,6 +112,7 @@ app.get('/students/login', async (req, res) => {
 
 });
 
+// Todo: authenticate admin login
 app.get('/admins/login', (req, res) => {
 
 });
@@ -378,16 +378,90 @@ app.get('/students', async (req, res) => {
     }
 });
 
-app.post('/courses/create', (req, res) => {
+// Creates a new course | Returns successful message and an object of the new course that was created
+app.post('/courses/create', async (req, res) => {
+    const newCourse = req.body;
 
+    try {
+        const existingCourse = await pool.query('SELECT * FROM courses WHERE string_id = $1', [newCourse.string_id]);
+
+        if (existingCourse.rows.length > 0) {
+            return res.status(400).json({message: "Course Already Exists"});
+        }
+        else {
+            const insertCourse = await pool.query(`INSERT INTO courses 
+                (string_id, title, description, schedule, classroom_number, maximum_capacity, credit_hours, tuition_cost) 
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, 
+                [newCourse.string_id, newCourse.title, newCourse.description, newCourse.schedule, newCourse.classroom_number, newCourse.maximum_capacity, newCourse.credit_hours, newCourse.tuition_cost]
+            );
+
+            return res.status(200).json({message: "New Course Created", course: insertCourse.rows[0]});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Server Error"});
+    }
 });
 
-app.put('/courses/update/:course_id', (req, res) => {
+// Updates a course by using course_id | Returns successful message and object of course that was updated
+app.put('/courses/update/:course_id', async (req, res) => {
+    const updateObject = req.body;
+    const courseArray = Object.entries(updateObject);
 
+    try {
+
+        const checkStringId = await pool.query('SELECT * FROM courses WHERE string_id = $1', [updateObject.string_id]);
+        const checkCourseId = await pool.query('SELECT * FROM courses WHERE course_id = $1', [req.params.course_id]);
+
+        if (checkStringId.rows.length > 0) {
+            return res.status(400).json({ message: "Course String_Id Already in Use"});
+        }
+
+        if (checkCourseId.rows.length <= 0) {
+            return res.status(400).json({ message: "Course not Found"});
+        }
+
+
+        for (let i = 0; i < courseArray.length; i++) {
+            if (courseArray[i][0] !== undefined) {
+                await pool.query('UPDATE courses SET ' + courseArray[i][0] + '= $1 WHERE course_id = $2 RETURNING *', [courseArray[i][1], req.params.course_id]);  
+            }
+            else {
+                console.log("error within Course Array loop");
+            }
+        }
+
+        const updatedCourse = await pool.query('SELECT * FROM courses WHERE course_id = $1', [req.params.course_id]);
+        return res.status(200).json({message: "Update Succesful", student: updatedCourse.rows[0]});
+        
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Server Error"});
+    }
 });
 
-app.delete('/courses/delete/:course_id', (req, res) => {
+// Deletes course through course_id paramater || Returns succesful message and delete course object
+app.delete('/courses/delete/:course_id', async (req, res) => {
+    const course_id = req.params.course_id;
 
+    try {
+
+        const checkCourse = await pool.query('SELECT * FROM courses WHERE course_id = $1', [course_id]);
+
+        if (checkCourse.rows.length <= 0) {
+            return res.status(400).json({message: "Course Does Not Exist"});
+        }
+        else {
+            const deletedCourse = await pool.query('DELETE FROM courses WHERE course_id = $1 RETURNING *', [course_id]);
+            return res.status(200).json({message: "Course successfully deleted", course: deletedCourse.rows[0]});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: "Server Error"});
+    }
 });
 
 app.listen(PORT, () => {
