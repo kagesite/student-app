@@ -7,7 +7,7 @@ import "../styles/Header.css"
 
 function TestFooter() {
     return (
-        <header className='header'>
+        <header className='footer'>
             <div className='btns-container'>
                 <Link to="/student-dash">
                     <button>Student Dash</button>

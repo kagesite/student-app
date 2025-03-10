@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TestFooter from '../components/TestFooter'
 import StudentDashHeader from '../components/StudentDashHeader'
 import "../styles/StudentDash.css"
@@ -7,6 +7,7 @@ import "../styles/CourseModal.css"
 function StudentDash() {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [readyToRegister, setReadyToRegister] = useState(false);
 
     const courses = [
         {
@@ -55,6 +56,22 @@ function StudentDash() {
         }
     ];
 
+
+    // PREVENTS PAGE SCROLLING WHILE MODAL IS OPEN
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
+        return () => {
+            document.body.style.overflow = "auto"; // Cleanup when modal closes
+        }
+    }, [isModalOpen]);
+
+
+
     const showCourseDetails = (id) => {
         const course = courses.find(c => c.id === id);
         setSelectedCourse(course)
@@ -63,22 +80,24 @@ function StudentDash() {
 
     const closeModal = () => {
         setIsModalOpen(false);
+        setReadyToRegister(false);
     }
-
-
 
     return (
         <div>
             <StudentDashHeader />
             <main>
-                <h1>Student Dashboard</h1>
+                <h1 className='page-title'>Student Dashboard</h1>
                 <div className="course-container">
                     <ul className='course-list'>
                         {courses.map(course => {
                             return (
                                 <li key={course.id} className='course-card'>
-                                    <p>Course: {course.name}</p>
-                                    <p>Schedule: {course.schedule}</p>
+                                    <h3>Course: {course.name}</h3>
+                                    <hr className='bar' />
+                                    <p><strong>Schedule:</strong> {course.schedule}</p>
+                                    <p><strong>Credits:</strong> {course.credits}</p>
+                                    <p><strong>Fee:</strong> ${course.fee.toFixed(2)}</p>
                                     <button onClick={() => showCourseDetails(course.id)}>Learn More</button>
                                 </li>
                             )
@@ -86,20 +105,46 @@ function StudentDash() {
                     </ul>
                 </div>
 
-                {/* Modal for course details */}
+                {/* Modal for course details & Registering */}
                 {isModalOpen && (
                     <div className="modal-overlay">
                         <div className="modal">
-                            <button className="close-modal" onClick={closeModal}>X</button>
-                            <h2>{selectedCourse.name}</h2>
-                            <p><strong>Code:</strong> {selectedCourse.code}</p>
-                            <p><strong>Description:</strong> {selectedCourse.description}</p>
-                            <p><strong>Schedule:</strong> {selectedCourse.schedule}</p>
-                            <p><strong>Location:</strong> {selectedCourse.location}</p>
-                            <p><strong>Capacity:</strong> {selectedCourse.capacity}</p>
-                            <p><strong>Credits:</strong> {selectedCourse.credits}</p>
-                            <p><strong>Fee:</strong> ${selectedCourse.fee}</p>
-                            <button onClick={closeModal}>Close</button>
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeModal}>X</button>
+                            </div>
+                            {readyToRegister ? (
+                                <div className='registration-modal'>
+                                    <h2>Register for {selectedCourse.name}</h2>
+                                    <form className='registration-form'>
+                                        <div>
+                                            <label>Student Name:</label>
+                                            <input type="text" placeholder="Enter your name" required />
+                                        </div>
+                                        <div>
+
+                                            <label>Email:</label>
+                                            <input type="email" placeholder="Enter your email" required />
+                                        </div>
+                                        <button type="submit" className='registration-btn'>Confirm Registration</button>
+                                    </form>
+
+                                    <div className='register-bottom'>
+                                        <button className="back-btn" onClick={() => setReadyToRegister(false)}>Back</button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className='modal-inside'>
+                                    <h2>{selectedCourse.name}</h2>
+                                    <p><strong>Code:</strong> {selectedCourse.code}</p>
+                                    <p><strong>Description:</strong> {selectedCourse.description}</p>
+                                    <p><strong>Schedule:</strong> {selectedCourse.schedule}</p>
+                                    <p><strong>Location:</strong> {selectedCourse.location}</p>
+                                    <p><strong>Capacity:</strong> {selectedCourse.capacity}</p>
+                                    <p><strong>Credits:</strong> {selectedCourse.credits}</p>
+                                    <p><strong>Fee:</strong> ${selectedCourse.fee}</p>
+                                    <button className="register-btn" onClick={() => setReadyToRegister(true)} >Register</button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
