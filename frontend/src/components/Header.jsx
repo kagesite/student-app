@@ -8,7 +8,7 @@ function Header() {
     return (
         <header className='header'>
             <a href="/">
-                <h1>My App</h1>
+                <h1>TK COURSES</h1>
             </a>
             <div className='btns-container'>
                 <Link to="/student-login">

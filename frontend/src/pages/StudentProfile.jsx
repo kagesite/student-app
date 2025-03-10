@@ -1,11 +1,141 @@
-import React from 'react'
+import React, { useState } from 'react'
 import StudentDashHeader from '../components/StudentDashHeader'
+import '../styles/Profile.css';
 
 function StudentProfile() {
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const showEditModal = (id) => {
+        setIsEditModalOpen(true);
+    }
+
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+    }
+
+
     return (
         <div>
             <StudentDashHeader />
-            <h1>Student Profile</h1>
+            <main>
+                <h1 className='page-title'>Student Profile</h1>
+                <div className="main-container">
+                    <div className="profile-container">
+                        <div className="profile-top">
+                            <img src="/profile-avatar.png" className="profile-img" alt="" />
+                            <h3 className='profile-name'>joemama02</h3>
+                            <hr className="bar" />
+                        </div>
+                        <div className="profile-main">
+                            <div className="profile-courses">
+                                <div className="profile-heading">
+                                    <h3 className=''>Courses</h3>
+                                    <hr className="bar" />
+                                </div>
+                                <div className="profile-courses">
+                                    No Available Info
+                                </div>
+                            </div>
+                            <div className="profile-info">
+                                <div className="profile-heading">
+                                    <h3 className=''>Info</h3>
+                                    <hr className="bar" />
+                                </div>
+                                <div className="name-info">
+                                    <div className="info-container">
+                                        <h3>First Name</h3>
+                                        <p>Joe</p>
+                                    </div>
+                                    <div className="info-container">
+                                        <h3>Last Name</h3>
+                                        <p>Mama</p>
+                                    </div>
+                                </div>
+                                <div className="contact-info">
+                                    <div className="info-container">
+                                        <h3>Email</h3>
+                                        <p>joemama@test.com</p>
+                                    </div>
+                                    <div className="info-container">
+                                        <h3>Address</h3>
+                                        <p>123 north 456 west</p>
+                                    </div>
+                                    <div className="info-container">
+                                        <h3>Telephone</h3>
+                                        <p>123-456-7890</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="profile-bottom">
+                            <button onClick={showEditModal}>Edit Info</button>
+                        </div>
+                    </div>
+                </div>
+
+                {isEditModalOpen && (
+                    <div className='modal-overlay'>
+                        <div className="edit-modal">
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeEditModal}>X</button>
+                            </div>
+                            <h2>Edit Profile Info</h2>
+                            <div className='edit-form-container'>
+                                <form className='edit-form'>
+                                    <div>
+                                        <label htmlFor="">First Name</label>
+                                        <input
+                                            type="text"
+                                            name='first_name'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='First name'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Last Name</label>
+                                        <input
+                                            type="text"
+                                            name='last_name'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='Last name'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Address</label>
+                                        <input
+                                            type="text"
+                                            name='email'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='Email'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Telephone</label>
+                                        <input
+                                            type="text"
+                                            name='email'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='Email'
+                                            required
+                                        />
+                                    </div>
+                                    <button type='submit'>Change Info</button>
+                                    {/* {message && <>{message}</>} */}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+
+            </main>
         </div>
     )
 }

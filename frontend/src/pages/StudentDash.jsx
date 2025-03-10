@@ -117,7 +117,7 @@ function StudentDash() {
                                     <h2>Register for {selectedCourse.name}</h2>
                                     <form className='registration-form'>
                                         <div>
-                                            <label>Student Name:</label>
+                                            <label>Username:</label>
                                             <input type="text" placeholder="Enter your name" required />
                                         </div>
                                         <div>

@@ -5,7 +5,7 @@ function StudentDashHeader() {
         <div>
             <header className="header">
                 <a href="/student-dash">
-                    <h1>My App</h1>
+                    <h1>TK COURSES</h1>
                 </a>
                 <div>
                     <a href="/student-profile">Student Profile</a>
