@@ -247,8 +247,28 @@ app.put('/students/update/:student_id', async (req, res) => {
 
 });
 
-app.delete('/students/delete/:student_id', (req, res) => {
 
+// Deletes a Student User by using student_id | Returns Sucessful Message with deleted student object
+app.delete('/students/delete/:student_id', async (req, res) => {
+    
+    const  student_id  = req.params.student_id;
+
+    try {
+
+        const existingUser = await pool.query('SELECT * FROM students WHERE student_id = $1', [student_id]);
+
+        if (existingUser.rows.length <= 0) {
+            return res.status(400).json({message: "Student Account Does Not Exist"});
+        }
+        else  {
+            const deleteStudent = await pool.query('DELETE FROM students WHERE student_id = $1 RETURNING *', [student_id]);
+            return res.status(200).json({ message: "Deletion Successful", student: deleteStudent.rows[0]});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: "Server Error"});
+    }
 });
 
 // Returns an array of all available courses as course objects
@@ -269,16 +289,74 @@ app.get('/courses', async (req, res) =>  {
     }
 });
 
-app.get('/students/courses/:student_id', (req, res) => {
+// Returns an array of object courses that a specific student is enrolled in
+app.get('/students/courses/:student_id', async (req, res) => {
+    const student_id = req.params.student_id;
+
+    try {
+
+        const studentCourses = await pool.query('SELECT * FROM courses INNER JOIN enrollments ON courses.course_id = enrollments.course_id WHERE student_id = $1', [student_id]);
+
+        if (studentCourses.rows.length <= 0) {
+            res.status(400).json({message: "Student is not registered for any classes"});
+        }
+        else {
+            return res.status(200).json(studentCourses.rows);
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Server Error"})
+    }
+});
+
+// Registers a student to a course provided the student_id and course_id in the request body || Returns succesful message and the object created in the enrollments table
+app.post('/students/register', async (req, res) => {
+
+    const {student_id, course_id} = req.body;
+
+    try {
+
+        const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
+
+        if (existingRegistration.rows.length > 0) {
+            return res.status(400).json({message: "Student Already Enrolled in This Course"});
+        }
+        else {
+
+            const studentEnrollment = await pool.query('INSERT INTO enrollments (student_id, course_id) VALUES ($1, $2) RETURNING *', [student_id, course_id]);
+            res.status(200).json({message: "Successfully Enrolled in Course", enrollment: studentEnrollment.rows[0]});
+        }
+
+
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Server Error"});
+    }
 
 });
 
-app.put('/students/register?student_id=id&course_id=course', (req, res) => {
+// Unregisters or deletes a student from a course | Returns succesful message and deleted enrollment object
+app.delete('/students/unregister', async (req, res) => {
+    const {student_id, course_id} = req.body;
 
-});
+    try {
 
-app.put('/students/unregister/student_id=id&course_id=course', (req, res) => {
+        const existingEnrollment = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
 
+        if (existingEnrollment.rows.length <= 0) {
+            return res.status(400).json({message: "Student is not registered to this course"});
+        }
+        else  {
+            const deleteEnrollment = await pool.query('DELETE FROM enrollments WHERE student_id = $1 AND course_id = $2 RETURNING *', [student_id, course_id]);
+            return res.status(200).json({ message: "Unregistration Successful", unregistration: deleteEnrollment.rows[0]});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: "Server Error"});
+    }
 });
 
 // Returns an array of all created students as student objects
