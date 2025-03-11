@@ -5,18 +5,11 @@ import '../styles/Profile.css';
 function StudentProfile() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isUnregsiterModalOpen, setIsUnregisteredModalOpen] = useState(false);
-<<<<<<< HEAD
-=======
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
->>>>>>> kage
 
     const showEditModal = () => {
         setIsEditModalOpen(true);
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> kage
     const closeEditModal = () => {
         setIsEditModalOpen(false);
     }
@@ -24,16 +17,10 @@ function StudentProfile() {
     const showUnregisterModal = () => {
         setIsUnregisteredModalOpen(true);
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> kage
     const closeUnregisterModal = () => {
         setIsUnregisteredModalOpen(false);
     }
 
-<<<<<<< HEAD
-=======
     const showLogoutModal = () => {
         setIsLogoutModalOpen(true);
     }
@@ -41,7 +28,6 @@ function StudentProfile() {
         setIsLogoutModalOpen(false);
     }
 
->>>>>>> kage
 
     return (
         <div>
@@ -53,10 +39,7 @@ function StudentProfile() {
                         <div className="profile-top">
                             <img src="/profile-avatar.png" className="profile-img" alt="" />
                             <h3 className='profile-name'>joemama02</h3>
-<<<<<<< HEAD
-=======
                             <button className='logout-btn' onClick={showLogoutModal}>Logout</button>
->>>>>>> kage
                             <hr className="bar" />
                         </div>
                         <div className="profile-main">
@@ -216,8 +199,6 @@ function StudentProfile() {
                     </div>
                 )}
 
-<<<<<<< HEAD
-=======
                 {isLogoutModalOpen && (
                     <div className='modal-overlay'>
                         <div className="edit-modal">
@@ -235,7 +216,6 @@ function StudentProfile() {
                     </div>
                 )}
 
->>>>>>> kage
 
             </main>
         </div>
