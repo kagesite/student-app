@@ -53,6 +53,50 @@ function StudentDash() {
             capacity: 25,
             credits: 3,
             fee: 900.00
+        },
+        {
+            id: 5,
+            code: "CSCI-1001",
+            name: "Introduction to Computer Science",
+            description: "This course introduces students to the fundamental concepts behind computers and computer programming. Topics include basic programming logic, algorithm development, computer architecture, and software engineering.",
+            schedule: "MWF 9-10",
+            location: "LAB-123",
+            capacity: 2,
+            credits: 3,
+            fee: 900.00
+        },
+        {
+            id: 6,
+            code: "CSCI-2001",
+            name: "Data Structures",
+            description: "This course covers the basics of data structures, algorithms, and data manipulation. Topics include linked lists, stacks, queues, trees, and hash tables. Students will also learn algorithms for sorting and searching data.",
+            schedule: "TTH 10-11",
+            location: "LAB-456",
+            capacity: 30,
+            credits: 3,
+            fee: 900.00
+        },
+        {
+            id: 7,
+            code: "CSCI-2003",
+            name: "Computer Architecture",
+            description: "This course provides an overview of modern computer systems. Topics include assembly language, memory, CPU, and input/output devices.",
+            schedule: "MWF 8-9",
+            location: "LAB-789",
+            capacity: 20,
+            credits: 3,
+            fee: 900.00
+        },
+        {
+            id: 8,
+            code: "CSCI-3001",
+            name: "Operating Systems",
+            description: "This course provides an introduction to the design and implementation of modern operating systems. Topics include processes, threads, memory management, file systems, and system security.",
+            schedule: "TTH 1-2:30",
+            location: "LAB-101",
+            capacity: 25,
+            credits: 3,
+            fee: 900.00
         }
     ];
 
@@ -93,7 +137,7 @@ function StudentDash() {
                         {courses.map(course => {
                             return (
                                 <li key={course.id} className='course-card'>
-                                    <h3>Course: {course.name}</h3>
+                                    <h3>{course.name}</h3>
                                     <hr className='bar' />
                                     <p><strong>Schedule:</strong> {course.schedule}</p>
                                     <p><strong>Credits:</strong> {course.credits}</p>

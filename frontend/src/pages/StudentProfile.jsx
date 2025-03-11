@@ -4,13 +4,22 @@ import '../styles/Profile.css';
 
 function StudentProfile() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isUnregsiterModalOpen, setIsUnregisteredModalOpen] = useState(false);
 
-    const showEditModal = (id) => {
+    const showEditModal = () => {
         setIsEditModalOpen(true);
     }
 
     const closeEditModal = () => {
         setIsEditModalOpen(false);
+    }
+
+    const showUnregisterModal = () => {
+        setIsUnregisteredModalOpen(true);
+    }
+
+    const closeUnregisterModal = () => {
+        setIsUnregisteredModalOpen(false);
     }
 
 
@@ -33,7 +42,18 @@ function StudentProfile() {
                                     <hr className="bar" />
                                 </div>
                                 <div className="profile-courses">
-                                    No Available Info
+                                    <div className="profile-course">
+                                        <h3>Course 1</h3>
+                                        <button onClick={showUnregisterModal}>Unregister</button>
+                                    </div>
+                                    <div className="profile-course">
+                                        <h3>Course 2</h3>
+                                        <button onClick={showUnregisterModal}>Unregister</button>
+                                    </div>
+                                    <div className="profile-course">
+                                        <h3>Course 3</h3>
+                                        <button onClick={showUnregisterModal}>Unregister</button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="profile-info">
@@ -126,8 +146,46 @@ function StudentProfile() {
                                             required
                                         />
                                     </div>
-                                    <button type='submit'>Change Info</button>
+                                    <button type='submit'>Confirm</button>
                                     {/* {message && <>{message}</>} */}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isUnregsiterModalOpen && (
+                    <div className='modal-overlay'>
+                        <div className="edit-modal">
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeUnregisterModal}>X</button>
+                            </div>
+                            <h2>Unregister from course</h2>
+                            <div className='edit-form-container'>
+                                <form className='edit-form'>
+                                    <div>
+                                        <label htmlFor="">Username</label>
+                                        <input
+                                            type="text"
+                                            name='username'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='Username'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Password</label>
+                                        <input
+                                            type="password"
+                                            name='password'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='Password'
+                                            required
+                                        />
+                                    </div>
+                                    <button type='submit'>Confirm</button>
                                 </form>
                             </div>
                         </div>
