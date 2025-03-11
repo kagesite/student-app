@@ -1,28 +1,25 @@
-import './App.css'
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import Register from './components/Register'
-import Login from './components/Login'
-import AdminLogin from './components/AdminLogin'
-import PageNotFound from './components/PageNotFound'
-import Home from './components/Home'
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import StudentSignup from './pages/StudentSignup';
+import StudentLogin from './pages/StudentLogin';
+import AdminLogin from './pages/AdminLogin';
+import StudentDash from './pages/StudentDash';
+import AdminDash from './pages/AdminDash';
+import "./styles/index.css"
+import StudentProfile from './pages/StudentProfile';
+
 
 function App() {
-
-  return (
-    <>
-      <BrowserRouter>
+    return (
         <Routes>
-          <Route path='/' element={<Login/>}/>
-          <Route path='/register' element={<Register/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/adminLogin' element={<AdminLogin/>}/>
-          <Route path='/home'element={<Home/>}/>
-          <Route path='*' element={<PageNotFound/>}/>
+            <Route path="/" element={<StudentSignup />} />
+            <Route path="student-login" element={<StudentLogin />} />
+            <Route path="admin-login" element={<AdminLogin />} />
+            <Route path="student-dash" element={<StudentDash />} />
+            <Route path="admin-dash" element={<AdminDash />} />
+            <Route path="student-profile" element={<StudentProfile /> } />
         </Routes>
-      </BrowserRouter>
-    </>
-  )
+    )
 }
 
 export default App
-
