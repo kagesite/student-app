@@ -41,9 +41,54 @@ main {
 }
 
 .profile-name {
+    margin-bottom: 20px;
+}
+.logout-btn {
     margin-bottom: 30px;
+    font-size: 16px;
+    padding: 4px 8px;
+    color: gray;
+    border: 2px solid gray;
+    border-radius: 8px;
+    background-color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.logout-btn:hover {
+    background-color: gray;
+    color: white;
 }
 
+.logout-modal-btns-container {
+    display: flex;
+    justify-content: center;
+}
+
+.logout-btns {
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+}
+
+.logout-btns button {
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 2px solid #000004;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #000;
+    background-color: #fbfef9;
+}
+.logout-btns button:nth-child(1):hover {
+    background-color: #000;
+    color: white;
+}
+.logout-btns button:nth-child(2):hover {
+    background-color: #ff2e1c;
+    color: white;
+}
 .profile-top .bar {
     width: 100%;
     border: 2px solid black
