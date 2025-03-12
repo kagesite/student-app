@@ -311,11 +311,11 @@ app.get('/students/courses/:student_id', async (req, res) => {
 // Registers a student to a course provided the student_id and course_id in the request body || Returns succesful message and the object created in the enrollments table
 app.post('/students/register', async (req, res) => {
 
-    const {student_id, course_id} = req.body;
+    const {username, email, course_id} = req.body;
 
     try {
 
-        const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
+        const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE email = $1 AND course_id = $2', [email, course_id]);
 
         if (existingRegistration.rows.length > 0) {
             return res.status(400).json({message: "Student Already Enrolled in This Course"});
