@@ -9,7 +9,13 @@ function StudentDash() {
     const [selectedCourse, setSelectedCourse] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [readyToRegister, setReadyToRegister] = useState(false);
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        course_id: ""
+    })
 
+    // FETCHING ALL COURSES
     useEffect(() => {
         fetch('http://localhost:3001/courses')
             .then(response => response.json())
@@ -30,10 +36,48 @@ function StudentDash() {
     }, [isModalOpen]);
 
 
+    // FORM DATA FUNCTIONS
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+
+    const handleSubmit = (e, id) => {
+        e.preventDefault();
+
+        try {
+            fetch('http://localhost:3001/students/register', {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify(formData)
+            })
+
+            if (response.ok) {
+                console.log("Student Enrolled Successfully!");
+                setFormData({
+                    username: "",
+                    email: "",
+                })
+            } else {
+                console.error("Failed to enroll!")
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+
 
     const showCourseDetails = (id) => {
         const selectedCourse = courses.find(c => c.course_id === id);
-        setSelectedCourse(selectedCourse)
+        setSelectedCourse(selectedCourse);
+
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            course_id: selectedCourse.course_id
+        }))
+
         setIsModalOpen(true);
     }
 
@@ -74,14 +118,28 @@ function StudentDash() {
                             {readyToRegister ? (
                                 <div className='registration-modal'>
                                     <h2>Register for {selectedCourse.title}</h2>
-                                    <form className='registration-form'>
+                                    <form onSubmit={handleSubmit} className='registration-form'>
                                         <div>
                                             <label>Username:</label>
-                                            <input type="text" placeholder="Enter your name" required />
+                                            <input
+                                                type="text"
+                                                name='username'
+                                                placeholder="Enter your username"
+                                                onChange={handleChange}
+                                                value={formData.username}
+                                                required
+                                            />
                                         </div>
                                         <div>
                                             <label>Email:</label>
-                                            <input type="email" placeholder="Enter your email" required />
+                                            <input
+                                                type="email"
+                                                name='email'
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                placeholder="Enter your email"
+                                                required
+                                            />
                                         </div>
                                         <button type="submit" className='registration-btn'>Confirm Registration</button>
                                     </form>
