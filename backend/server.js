@@ -18,10 +18,8 @@ app.use(express.static(path.resolve(__dirname, "../client/dist")));
 
 // Creates a new student in the database | Returns a sucessful or unsucessful message
 app.post('/students/create', async (req, res) => {
-
     console.log(req.body);
-    
-    const { username, email, password, firstname, lastname, telephone, address } = req.body;
+    const { username, email, password, first_name, last_name, telephone, address } = req.body;
 
     //const studentDetails = req.body;
 
@@ -43,8 +41,8 @@ app.post('/students/create', async (req, res) => {
                 hashedPassword = hash;
 
                 const newStudent = await pool.query(
-                    `INSERT INTO students (username, email, password, firstname, lastname, telephone, address)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [username, email, hashedPassword, firstname, lastname, telephone, address]
+                    `INSERT INTO students (username, email, password, first_name, last_name, telephone, address)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [username, email, hashedPassword, first_name, last_name, telephone, address]
                 );
         
                 res.status(201).json({ message: "Student registered sucessfully", student: newStudent.rows[0]});
