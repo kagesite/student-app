@@ -10,7 +10,6 @@
 }
 
 .courses-container {
-    background-color: lightblue;
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -85,7 +84,7 @@
     color: white;
 }
 
-.registered-students-btn {
+.view-enrollment-btn {
     background-color: #fbfef9;
     color: #000;
     border: 2px solid #000004;
@@ -96,7 +95,7 @@
     cursor: pointer;
     transition: 0.2s;
 }
-.registered-students-btn:hover {
+.view-enrollment-btn:hover {
     background-color: #000004;
     color: white;
 }
@@ -150,4 +149,25 @@
 .student-item button:hover {
     background-color: #000004;
     color: white;
+}
+
+.student-modal-inside {
+    width: 100%;
+    /* background-color: lightpink; */
+}
+
+.student-modal-bar {
+    width: 80%;
+    border: 2px solid gray;
+    margin-bottom: 30px;
+}
+
+.student-modal-info {
+    list-style: none;
+    /* background-color: lightpink; */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-size: 20px;
+    margin-bottom: 30px;
 }

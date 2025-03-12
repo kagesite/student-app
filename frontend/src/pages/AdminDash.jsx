@@ -7,8 +7,12 @@ function AdminDash() {
     const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [students, setStudents] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState(null);
     const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
+    const [isStudentsModalOpen, setIsStudentsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+    // FETCHING ALL COURSES
     useEffect(() => {
         fetch('http://localhost:3001/courses')
             .then(response => response.json())
@@ -16,6 +20,7 @@ function AdminDash() {
             .catch(error => console.error("Error fetching courses:", error));
     }, [])
 
+    // FETCHINGNG ALL STUDENTS
     useEffect(() => {
         fetch('http://localhost:3001/students')
             .then(response => response.json())
@@ -31,9 +36,25 @@ function AdminDash() {
         setSelectedCourse(selectedCourse);
         setIsCoursesModalOpen(true);
     }
-
     const closeCourseModal = () => {
         setIsCoursesModalOpen(false);
+    }
+
+    const showStudentsModal = (id) => {
+        const selectedStudent = students.find(s => s.id === id);
+        setSelectedStudent(selectedStudent);
+        setIsStudentsModalOpen(true);
+    }
+    const closeStudentModal = () => {
+        setIsStudentsModalOpen(false);
+    }
+
+    const showEditModal = (id) => {
+        setIsCoursesModalOpen(false);
+        setIsEditModalOpen(true);
+    }
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
     }
 
 
@@ -66,7 +87,7 @@ function AdminDash() {
                                         <div className='student-info'>
                                             <p><span>ID: {student.id}</span>{student.first_name} {student.last_name}</p>
                                         </div>
-                                        <button>Details</button>
+                                        <button onClick={() => showStudentsModal(student.id)}>Details</button>
                                     </li>
                                 )
                             })}
@@ -74,6 +95,7 @@ function AdminDash() {
                     </div>
                 </div>
 
+                {/* COURSES INFO MODAL */}
                 {isCoursesModalOpen && (
                     <div className="modal-overlay">
                         <div className="modal">
@@ -89,7 +111,95 @@ function AdminDash() {
                                 <p><strong>Capacity:</strong> {selectedCourse.maximum_capacity}</p>
                                 <p><strong>Credits:</strong> {selectedCourse.credit_hours}</p>
                                 <p><strong>Fee:</strong> ${selectedCourse.tuition_cost}</p>
-                                <button className="registered-students-btn" >Registered Students</button>
+                                <button className="view-enrollment-btn" >View Enrollment</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* STUDENTS INFO MODAL */}
+                {isStudentsModalOpen && (
+                    <div className="modal-overlay">
+                        <div className="modal">
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeStudentModal}>X</button>
+                            </div>
+                            <div className='student-modal-inside'>
+                                <h2>{selectedStudent.first_name} {selectedStudent.last_name}</h2>
+                                <hr className='student-modal-bar' />
+                                <ul className='student-modal-info'>
+                                    <li><strong>Username:</strong> {selectedStudent.username}</li>
+                                    <li><strong>First Name:</strong> {selectedStudent.first_name}</li>
+                                    <li><strong>Last Name:</strong> {selectedStudent.last_name}</li>
+                                    <li><strong>Email:</strong> {selectedStudent.email}</li>
+                                    <li><strong>Address:</strong> {selectedStudent.address}</li>
+                                    <li><strong>Telephone:</strong> {selectedStudent.telephone}</li>
+                                </ul>
+                                <div className="profile-bottom">
+                                    <button onClick={showEditModal}>Edit Info</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* EDIT STUDENT INFO MODAL */}
+                {isEditModalOpen && (
+                    <div className='modal-overlay'>
+                        <div className="edit-modal">
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeEditModal}>X</button>
+                            </div>
+                            <h2>Edit Profile Info</h2>
+                            <div className='edit-form-container'>
+                                <form className='edit-form'>
+                                    <div>
+                                        <label htmlFor="">First Name</label>
+                                        <input
+                                            type="text"
+                                            name='first_name'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='First name'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Last Name</label>
+                                        <input
+                                            type="text"
+                                            name='last_name'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='Last name'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Address</label>
+                                        <input
+                                            type="text"
+                                            name='email'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='Email'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Telephone</label>
+                                        <input
+                                            type="text"
+                                            name='email'
+                                            // onChange={}
+                                            // value={}
+                                            placeholder='Email'
+                                            required
+                                        />
+                                    </div>
+                                    <button type='submit'>Confirm</button>
+                                    {/* {message && <>{message}</>} */}
+                                </form>
                             </div>
                         </div>
                     </div>
