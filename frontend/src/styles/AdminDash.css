@@ -17,19 +17,30 @@
     overflow-y: scroll;
     padding: 30px;
     border-radius: 12px;
+    background-color: #EBEDEF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .students-container {
-    background-color: lightgreen;
     width: 50%;
     border-radius: 12px;
+    background-color: #329F5b;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.students-container h2 {
+    color: white;
 }
 
 .courses-list {
     display: flex;
     flex-direction: column;
     gap: 30px;
-
 }
 
 .course-item {
@@ -38,19 +49,32 @@
     align-items: center;
     
     padding: 20px;
-    background-color: lightseagreen;
+    /* background-color: lightseagreen; */
+    background-color: #fbfef9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: 0.2s ease-in-out;
+}
+.course-item:hover {
+    padding: 20px 30px;
     border-radius: 12px;
 }
 .course-item h3 {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 500;
+}
+.course-item h3 span {
+    margin-right: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic
 }
 .course-item button {
     background-color: #fbfef9;
     color: #000;
     border: 2px solid #000004;
     border-radius: 12px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     padding: 10px 16px;
     cursor: pointer;
@@ -73,6 +97,57 @@
     transition: 0.2s;
 }
 .registered-students-btn:hover {
+    background-color: #000004;
+    color: white;
+}
+
+
+.students-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.student-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    /* background-color: lightseagreen; */
+    background-color: #fbfef9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: 0.2s ease-in-out;
+}
+.student-item:hover {
+    padding: 20px 30px;
+    border-radius: 12px;
+}
+
+.student-info {
+    width: 75%;
+    font-size: 18px;
+    font-weight: 500
+}
+.student-info p span {
+    margin-right: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.student-item button {
+    background-color: #fbfef9;
+    color: #000;
+    border: 2px solid #000004;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.student-item button:hover {
     background-color: #000004;
     color: white;
 }

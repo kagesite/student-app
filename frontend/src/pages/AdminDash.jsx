@@ -12,8 +12,19 @@ function AdminDash() {
     useEffect(() => {
         fetch('http://localhost:3001/courses')
             .then(response => response.json())
-            .then(data => setCourses(data));
-    })
+            .then(data => setCourses(data))
+            .catch(error => console.error("Error fetching courses:", error));
+    }, [])
+
+    useEffect(() => {
+        fetch('http://localhost:3001/students')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Students api returned:", data); // DEBUGGING
+                setStudents(data);
+            })
+            .catch(error => console.error("Error fetching students:", error));
+    }, [])
 
     const showCoursesModal = (id) => {
         const selectedCourse = courses.find(c => c.course_id === id);
@@ -39,7 +50,7 @@ function AdminDash() {
                             {courses.map(course => {
                                 return (
                                     <li key={course.course_id} className='course-item'>
-                                        <h3>{course.title}</h3>
+                                        <h3><span>{course.string_id}:</span>{course.title}</h3>
                                         <button onClick={() => showCoursesModal(course.course_id)}>Details</button>
                                     </li>
                                 )
@@ -47,7 +58,19 @@ function AdminDash() {
                         </ul>
                     </div>
                     <div className="students-container">
-                        test
+                        <h2>All Students</h2>
+                        <ul className='students-list'>
+                            {students.map(student => {
+                                return (
+                                    <li key={student.id} className='student-item'>
+                                        <div className='student-info'>
+                                            <p><span>ID: {student.id}</span>{student.first_name} {student.last_name}</p>
+                                        </div>
+                                        <button>Details</button>
+                                    </li>
+                                )
+                            })}
+                        </ul>
                     </div>
                 </div>
 
