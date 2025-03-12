@@ -362,7 +362,7 @@ app.get('/students', async (req, res) => {
 
     try {
 
-        const studentsArray = await pool.query('SELECT * FROM students ORDER BY student_id ASC');
+        const studentsArray = await pool.query('SELECT * FROM students ORDER BY id ASC');
         
         if (studentsArray.rows.length <= 0) {
             return res.status(400).json({message: "Student Table Does NOT Exist"});
