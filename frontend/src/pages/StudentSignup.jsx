@@ -41,6 +41,14 @@ function StudentSignup() {
                 })
             } else {
                 console.error("Failed to registered student!")
+                alert("Username or email are already linked to an account. Try again")
+                setFormData({
+                    username: "",
+                    first_name: "",
+                    last_name: "",
+                    email: "",
+                    password: "",
+                })
             }
         } catch (error) {
             console.error("Error:", error)
