@@ -5,101 +5,16 @@ import "../styles/StudentDash.css"
 import "../styles/CourseModal.css"
 
 function StudentDash() {
-    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [courses, setCourses] = useState([])
+    const [selectedCourse, setSelectedCourse] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [readyToRegister, setReadyToRegister] = useState(false);
 
-    const courses = [
-        {
-            id: 1,
-            code: "CSCI-1001",
-            name: "Introduction to Computer Science",
-            description: "This course introduces students to the fundamental concepts behind computers and computer programming. Topics include basic programming logic, algorithm development, computer architecture, and software engineering.",
-            schedule: "MWF 9-10",
-            location: "LAB-123",
-            capacity: 2,
-            credits: 3,
-            fee: 900.00
-        },
-        {
-            id: 2,
-            code: "CSCI-2001",
-            name: "Data Structures",
-            description: "This course covers the basics of data structures, algorithms, and data manipulation. Topics include linked lists, stacks, queues, trees, and hash tables. Students will also learn algorithms for sorting and searching data.",
-            schedule: "TTH 10-11",
-            location: "LAB-456",
-            capacity: 30,
-            credits: 3,
-            fee: 900.00
-        },
-        {
-            id: 3,
-            code: "CSCI-2003",
-            name: "Computer Architecture",
-            description: "This course provides an overview of modern computer systems. Topics include assembly language, memory, CPU, and input/output devices.",
-            schedule: "MWF 8-9",
-            location: "LAB-789",
-            capacity: 20,
-            credits: 3,
-            fee: 900.00
-        },
-        {
-            id: 4,
-            code: "CSCI-3001",
-            name: "Operating Systems",
-            description: "This course provides an introduction to the design and implementation of modern operating systems. Topics include processes, threads, memory management, file systems, and system security.",
-            schedule: "TTH 1-2:30",
-            location: "LAB-101",
-            capacity: 25,
-            credits: 3,
-            fee: 900.00
-        },
-        {
-            id: 5,
-            code: "CSCI-1001",
-            name: "Introduction to Computer Science",
-            description: "This course introduces students to the fundamental concepts behind computers and computer programming. Topics include basic programming logic, algorithm development, computer architecture, and software engineering.",
-            schedule: "MWF 9-10",
-            location: "LAB-123",
-            capacity: 2,
-            credits: 3,
-            fee: 900.00
-        },
-        {
-            id: 6,
-            code: "CSCI-2001",
-            name: "Data Structures",
-            description: "This course covers the basics of data structures, algorithms, and data manipulation. Topics include linked lists, stacks, queues, trees, and hash tables. Students will also learn algorithms for sorting and searching data.",
-            schedule: "TTH 10-11",
-            location: "LAB-456",
-            capacity: 30,
-            credits: 3,
-            fee: 900.00
-        },
-        {
-            id: 7,
-            code: "CSCI-2003",
-            name: "Computer Architecture",
-            description: "This course provides an overview of modern computer systems. Topics include assembly language, memory, CPU, and input/output devices.",
-            schedule: "MWF 8-9",
-            location: "LAB-789",
-            capacity: 20,
-            credits: 3,
-            fee: 900.00
-        },
-        {
-            id: 8,
-            code: "CSCI-3001",
-            name: "Operating Systems",
-            description: "This course provides an introduction to the design and implementation of modern operating systems. Topics include processes, threads, memory management, file systems, and system security.",
-            schedule: "TTH 1-2:30",
-            location: "LAB-101",
-            capacity: 25,
-            credits: 3,
-            fee: 900.00
-        }
-    ];
-
+    useEffect(() => {
+        fetch('http://localhost:3001/courses')
+            .then(response => response.json())
+            .then(data => setCourses(data))
+    }, []);
 
     // PREVENTS PAGE SCROLLING WHILE MODAL IS OPEN
     useEffect(() => {
@@ -117,8 +32,8 @@ function StudentDash() {
 
 
     const showCourseDetails = (id) => {
-        const course = courses.find(c => c.id === id);
-        setSelectedCourse(course)
+        const selectedCourse = courses.find(c => c.course_id === id);
+        setSelectedCourse(selectedCourse)
         setIsModalOpen(true);
     }
 
@@ -136,13 +51,13 @@ function StudentDash() {
                     <ul className='course-list'>
                         {courses.map(course => {
                             return (
-                                <li key={course.id} className='course-card'>
-                                    <h3>{course.name}</h3>
+                                <li key={course.course_id} className='course-card'>
+                                    <h3>{course.title}</h3>
                                     <hr className='bar' />
                                     <p><strong>Schedule:</strong> {course.schedule}</p>
-                                    <p><strong>Credits:</strong> {course.credits}</p>
-                                    <p><strong>Fee:</strong> ${course.fee.toFixed(2)}</p>
-                                    <button onClick={() => showCourseDetails(course.id)}>Learn More</button>
+                                    <p><strong>Credits:</strong> {course.credit_hours}</p>
+                                    <p><strong>Fee:</strong> ${course.tuition_cost}</p>
+                                    <button onClick={() => showCourseDetails(course.course_id)}>Learn More</button>
                                 </li>
                             )
                         })}
@@ -158,14 +73,13 @@ function StudentDash() {
                             </div>
                             {readyToRegister ? (
                                 <div className='registration-modal'>
-                                    <h2>Register for {selectedCourse.name}</h2>
+                                    <h2>Register for {selectedCourse.title}</h2>
                                     <form className='registration-form'>
                                         <div>
                                             <label>Username:</label>
                                             <input type="text" placeholder="Enter your name" required />
                                         </div>
                                         <div>
-
                                             <label>Email:</label>
                                             <input type="email" placeholder="Enter your email" required />
                                         </div>
@@ -178,14 +92,14 @@ function StudentDash() {
                                 </div>
                             ) : (
                                 <div className='modal-inside'>
-                                    <h2>{selectedCourse.name}</h2>
-                                    <p><strong>Code:</strong> {selectedCourse.code}</p>
+                                    <h2>{selectedCourse.title}</h2>
+                                    <p><strong>Class ID:</strong> {selectedCourse.string_id}</p>
                                     <p><strong>Description:</strong> {selectedCourse.description}</p>
                                     <p><strong>Schedule:</strong> {selectedCourse.schedule}</p>
-                                    <p><strong>Location:</strong> {selectedCourse.location}</p>
-                                    <p><strong>Capacity:</strong> {selectedCourse.capacity}</p>
-                                    <p><strong>Credits:</strong> {selectedCourse.credits}</p>
-                                    <p><strong>Fee:</strong> ${selectedCourse.fee}</p>
+                                    <p><strong>Location:</strong> {selectedCourse.classroom_number}</p>
+                                    <p><strong>Capacity:</strong> {selectedCourse.maximum_capacity}</p>
+                                    <p><strong>Credits:</strong> {selectedCourse.credit_hours}</p>
+                                    <p><strong>Fee:</strong> ${selectedCourse.tuition_cost}</p>
                                     <button className="register-btn" onClick={() => setReadyToRegister(true)} >Register</button>
                                 </div>
                             )}
