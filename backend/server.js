@@ -61,7 +61,7 @@ app.post('/students/create', async (req, res) => {
 
 // Todo: add jwt for authorization and return a token in an object with the success message
 // Todo: make sure on the frontend that a user cannot create a username with an @ symbol
-app.get('/students/login', async (req, res) => {
+app.post('/students/login', async (req, res) => {
 
     let userCred = req.body;
 
@@ -121,40 +121,7 @@ app.get('/students/login', async (req, res) => {
 });
 
 
-// KAGES LOGIN
-app.post('/students/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const existingUser = await pool.query('SELECT * FROM students WHERE email = $1', [email]);
-        if (existingUser.rows.length === 0) {
-            return res.status(400).json({ message: "No account with that email" });
-        }
-
-        const user = existingUser.rows[0];
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) {
-            return res.status(403).json({ message: "Incorrect password" });
-        }
-
-        const token = jwt.sign(
-            { username: user.username, id: user.id },
-            process.env.JWT_PASSWORD,
-            { algorithm: "HS256", expiresIn: "1h" }
-        )
-
-        res.status(200).json({ message: "Login successful", token: token });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error" });
-    }
-})
-
-
-
-
-
+K
 // Todo: It's probably best practice to encrypt admin passwords, so encrypt their password in the database
 // Checks for admin details in database to login. If credentials match in the database, returns sucessful message and jwt token
 app.get('/admins/login', async (req, res) => {
