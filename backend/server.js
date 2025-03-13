@@ -103,7 +103,7 @@ app.post('/students/login', async (req, res) => {
                 if (result === true) {
                     const token = jwt.sign({ username: userCred.username }, process.env.JWT_PASSWORD, {
                         algorithm: "HS256",
-                        expiresIn: "1min"
+                        expiresIn: "1h"
                     });
                     res.status(200).json({ message: "Login Sucess", token: token });
                 }
@@ -121,7 +121,6 @@ app.post('/students/login', async (req, res) => {
 });
 
 
-K
 // Todo: It's probably best practice to encrypt admin passwords, so encrypt their password in the database
 // Checks for admin details in database to login. If credentials match in the database, returns sucessful message and jwt token
 app.get('/admins/login', async (req, res) => {
