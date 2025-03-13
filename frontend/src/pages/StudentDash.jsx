@@ -17,9 +17,23 @@ function StudentDash() {
 
     // FETCHING ALL COURSES
     useEffect(() => {
-        fetch('http://localhost:3001/courses')
-            .then(response => response.json())
+        const token = localStorage.getItem("token");
+
+        fetch('http://localhost:3001/courses', {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch courses");
+                }
+                return response.json();
+            })
             .then(data => setCourses(data))
+            .catch(error => console.error("Error fetching courses:", error));
     }, []);
 
     // PREVENTS PAGE SCROLLING WHILE MODAL IS OPEN

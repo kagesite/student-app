@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 
 function StudentLogin() {
     const [formData, setFormData] = useState({
-        email: "",
+        username: "",
         password: "",
     })
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,15 +19,28 @@ function StudentLogin() {
 
         try {
             const response = await fetch('http://localhost:3001/students/login', {
-                method: "GET",
+                method: "POST",
                 headers: {
                     "Content-type": "application/json"
                 },
                 body: JSON.stringify(formData)
             });
 
+            const data = await response.json()
+            // console.log(response);
+
             if (response.ok) {
                 console.log("Login successful!");
+                console.log("Received Token", data.token);
+                
+                if (data.token) {
+                    localStorage.setItem("token", data.token);
+                    console.log("Token stored in localStorage");
+                    // Automatically redirect to student dashboard
+                    navigate('/student-dash')
+                }
+                
+                console.log(formData);
                 setFormData({
                     email: "",
                     password: "",
@@ -34,7 +49,7 @@ function StudentLogin() {
                 console.error("Failed to login");
                 alert("Failed to login")
                 setFormData({
-                    email: "",
+                    username: "",
                     password: "",
                 })
             }
@@ -52,13 +67,13 @@ function StudentLogin() {
                 <h2>Student Login</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Email:</label>
+                        <label>Username:</label>
                         <input
-                            type="email"
-                            name='email'
-                            value={formData.email}
+                            type="text"
+                            name='username'
+                            value={formData.username}
                             onChange={handleChange}
-                            placeholder='Email'
+                            placeholder='Username'
                             required
                         />
                     </div>
@@ -73,9 +88,9 @@ function StudentLogin() {
                             required
                         />
                     </div>
-                    <Link to="/student-dash">
+                    {/* <Link to="/student-dash"> */}
                         <button type="submit">Login</button>
-                    </Link>
+                    {/* </Link> */}
                 </form>
             </div>
         </>
