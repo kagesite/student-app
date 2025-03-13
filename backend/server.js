@@ -400,33 +400,73 @@ app.get('/students/courses/:student_id',
     });
 
 // Registers a student to a course provided the student_id and course_id in the request body || Returns succesful message and the object created in the enrollments table
-app.post('/students/register',
-    expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
+// app.post('/students/register',
+//     expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
+//     async (req, res) => {
+
+//         const { username, email, course_id } = req.body;
+
+//         try {
+
+//             const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE email = $1 AND course_id = $2', [email, course_id]);
+
+//             if (existingRegistration.rows.length > 0) {
+//                 return res.status(400).json({ message: "Student Already Enrolled in This Course" });
+//             }
+//             else {
+
+//                 const studentEnrollment = await pool.query('INSERT INTO enrollments (student_id, course_id) VALUES ($1, $2) RETURNING *', [student_id, course_id]);
+//                 res.status(200).json({ message: "Successfully Enrolled in Course", enrollment: studentEnrollment.rows[0] });
+//             }
+
+
+
+//         } catch (error) {
+//             console.log(error);
+//             res.status(500).json({ message: "Server Error" });
+//         }
+
+//     });
+
+app.post('/students/register', 
+    expressjwt({secret: process.env.JWT_PASSWORD, algorithms: ["HS256"]}),
     async (req, res) => {
 
-        const { username, email, course_id } = req.body;
+        const {username, email, course_id} = req.body;
 
         try {
 
-            const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE email = $1 AND course_id = $2', [email, course_id]);
+            const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [username]);
+
+            if (existingUser.rows.length <= 0) {
+                return res.status(400).json({message: "Student Account not Found"});
+            }
+            
+            if (existingUser.rows[0].username !== username) {
+                return res.status(400).json({message: "Incorrect Username"});
+            }
+            
+            if (existingUser.rows[0].email !== email) {
+                return res.status(400).json({message: "Incorrect Email"});
+            }
+            
+            const student_id = existingUser.rows[0].id;
+
+            const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
 
             if (existingRegistration.rows.length > 0) {
-                return res.status(400).json({ message: "Student Already Enrolled in This Course" });
+                return res.status(400).json({message: "Student Already Enrolled in This Course"});
             }
             else {
-
                 const studentEnrollment = await pool.query('INSERT INTO enrollments (student_id, course_id) VALUES ($1, $2) RETURNING *', [student_id, course_id]);
-                res.status(200).json({ message: "Successfully Enrolled in Course", enrollment: studentEnrollment.rows[0] });
+                res.status(200).json({message: "Successfully Enrolled in Course", enrollment: studentEnrollment.rows[0]});
             }
-
-
-
         } catch (error) {
             console.log(error);
-            res.status(500).json({ message: "Server Error" });
+            res.status(500).json({message: "Server Error"});
         }
 
-    });
+});
 
 // Unregisters or deletes a student from a course | Returns succesful message and deleted enrollment object
 app.delete('/students/unregister',
