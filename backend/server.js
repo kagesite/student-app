@@ -7,8 +7,6 @@ const pool = require('./db.js');
 const app = express();
 const jwt = require('jsonwebtoken');
 const  {expressjwt: expressjwt}  = require('express-jwt');
-const jwt = require('jsonwebtoken');
-const  {expressjwt: expressjwt}  = require('express-jwt');
 const PORT = process.env.PORT || 3001;
 const path = require('path');
 
@@ -153,6 +151,7 @@ app.post('/students/create',
             res.status(500).json({ message: "server error"});
         }
 });
+
 // Searches database for a single student through the student_id search parameter | Returns found student object
 app.get('/students/id/:student_id',
     expressjwt({secret: process.env.JWT_PASSWORD, algorithms: ["HS256"]}), 
