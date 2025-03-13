@@ -39,7 +39,7 @@ app.post('/students/login', async (req, res) => {
                 if (result === true) {
                     const token = jwt.sign({ username: userCred.username}, process.env.JWT_PASSWORD, {
                         algorithm: "HS256",
-                        expiresIn: "1min"
+                        expiresIn: "1h"
                     });
                     res.status(200).json({message: "Login Sucess", token: token});
                 }
@@ -61,7 +61,7 @@ app.post('/students/login', async (req, res) => {
                 if (result === true) {
                     const token = jwt.sign({ username: userCred.username}, process.env.JWT_PASSWORD, {
                         algorithm: "HS256",
-                        expiresIn: "1min"
+                        expiresIn: "1h"
                     });
                     res.status(200).json({message: "Login Sucess", token: token});
                 }
@@ -361,9 +361,25 @@ app.post('/students/register',
     expressjwt({secret: process.env.JWT_PASSWORD, algorithms: ["HS256"]}),
     async (req, res) => {
 
-        const {student_id, course_id} = req.body;
+        const {username, email, course_id} = req.body;
 
         try {
+
+            const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [username]);
+
+            if (existingUser.rows.length <= 0) {
+                return res.status(400).json({message: "Student Account not Found"});
+            }
+
+            if (existingUser.rows[0].username !== username) {
+                return res.status(400).json({message: "Incorrect Username"});
+            }
+            
+            if (existingUser.rows[0].email !== email) {
+                return res.status(400).json({message: "Incorrect Email"});
+            }
+            
+            const student_id = existingUser.rows[0].student_id;
 
             const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
 
@@ -371,13 +387,9 @@ app.post('/students/register',
                 return res.status(400).json({message: "Student Already Enrolled in This Course"});
             }
             else {
-
                 const studentEnrollment = await pool.query('INSERT INTO enrollments (student_id, course_id) VALUES ($1, $2) RETURNING *', [student_id, course_id]);
                 res.status(200).json({message: "Successfully Enrolled in Course", enrollment: studentEnrollment.rows[0]});
             }
-
-
-            
         } catch (error) {
             console.log(error);
             res.status(500).json({message: "Server Error"});
@@ -389,19 +401,41 @@ app.post('/students/register',
 app.delete('/students/unregister', 
     expressjwt({secret: process.env.JWT_PASSWORD, algorithms: ["HS256"]}),
     async (req, res) => {
-        const {student_id, course_id} = req.body;
+
+        const {username, password,  course_id} = req.body;
 
         try {
 
-            const existingEnrollment = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
+            const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [username]);
 
-            if (existingEnrollment.rows.length <= 0) {
-                return res.status(400).json({message: "Student is not registered to this course"});
+            if (existingUser.rows.length <= 0) {
+                return res.status(400).json({message: "Student Account not Found"});
             }
-            else  {
-                const deleteEnrollment = await pool.query('DELETE FROM enrollments WHERE student_id = $1 AND course_id = $2 RETURNING *', [student_id, course_id]);
-                return res.status(200).json({ message: "Unregistration Successful", unregistration: deleteEnrollment.rows[0]});
+            
+            if (existingUser.rows[0].username !== username) {
+                return res.status(400).json({message: "Incorrect Username"});
             }
+
+            bcrypt.compare(password, existingUser.rows[0].password, async (err, result) => {
+                
+                
+                if (!result) {
+                    return res.status(400).json({message: "Incorrect Password"});
+                }
+                else {
+                    const student_id = existingUser.rows[0].student_id;
+
+                    const existingEnrollment = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
+
+                    if (existingEnrollment.rows.length <= 0) {
+                        return res.status(400).json({message: "Student is not registered to this course"});
+                    }
+                    else  {
+                        const deleteEnrollment = await pool.query('DELETE FROM enrollments WHERE student_id = $1 AND course_id = $2 RETURNING *', [student_id, course_id]);
+                        return res.status(200).json({ message: "Unregistration Successful", unregistration: deleteEnrollment.rows[0]});
+                    }
+                }
+            });
             
         } catch (error) {
             console.log(error);
