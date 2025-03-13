@@ -55,44 +55,54 @@ function StudentDash() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
+    // REGISTERING FUNCTION
     const handleSubmit = (e, id) => {
         e.preventDefault();
 
-        try {
-            fetch('http://localhost:3001/students/register', {
-                method: "POST",
-                headers: {
-                    "Content-type": "application/json",
-                },
-                body: JSON.stringify(formData)
-            })
-
+        const token = localStorage.getItem("token");
+        
+        fetch("http://localhost:3001/students/register", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
             if (response.ok) {
-                console.log("Student Enrolled Successfully!");
+                console.log("Student Enrolled Successully!");
+                console.log(`Token: ${token}`)
                 setFormData({
                     username: "",
                     email: "",
-                })
+                });
             } else {
-                console.error("Failed to enroll!")
+                return response.json().then(data => {
+                    console.error("Failed to enroll!", data.message);
+                })
             }
-        } catch (error) {
+        })
+        .catch(error => {
             console.error("Error:", error);
-        }
+        })
+        
     }
-
-
 
     const showCourseDetails = (id) => {
         const selectedCourse = courses.find(c => c.course_id === id);
-        setSelectedCourse(selectedCourse);
+        if (selectedCourse) {
+            setSelectedCourse(selectedCourse);
 
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            course_id: selectedCourse.course_id
-        }))
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                course_id: selectedCourse.course_id
+            }))
 
-        setIsModalOpen(true);
+            setIsModalOpen(true);
+        } else {
+            console.log("Course not found")
+        }
     }
 
     const closeModal = () => {
