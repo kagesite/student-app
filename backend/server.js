@@ -19,7 +19,7 @@ app.use(express.static(path.resolve(__dirname, "../client/dist")));
 // Handle requests from client side
 
 // Checks for student details in database to login. If credentials match in the database, returns succesful message and jwt token
-app.get('/students/login', async (req, res) => {
+app.post('/students/login', async (req, res) => {
     
     let userCred = req.body;
     
@@ -80,7 +80,7 @@ app.get('/students/login', async (req, res) => {
 
 // Todo: It's probably best practice to encrypt admin passwords, so encrypt their password in the database
 // Checks for admin details in database to login. If credentials match in the database, returns sucessful message and jwt token
-app.get('/admins/login', async (req, res) => {
+app.post('/admins/login', async (req, res) => {
     
     const adminCred = req.body;
 
