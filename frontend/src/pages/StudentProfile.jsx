@@ -8,6 +8,7 @@ function StudentProfile() {
     const [isUnregsiterModalOpen, setIsUnregisteredModalOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [profileData, setProfileData] = useState(null) // Stores Profile Data
+    const [profileCourses, setProfileCourses] = useState(null);
     const [loading, setLoading] = useState(true) // For loading state
     const navigate = useNavigate();
 
@@ -36,9 +37,29 @@ function StudentProfile() {
             console.log("No token found!");
         }
     }, []);
-    
-    
-    
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        if (token && profileData?.id) {
+            fetch(`http://localhost:3001/students/courses/${profileData.id}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setProfileCourses(data);
+                })
+                .catch(error => console.error("Error fetching profile courses", error));
+        } else {
+            console.log("No course token found!")
+        }
+    }, [profileData])
+
+
+
     const showEditModal = () => {
         setIsEditModalOpen(true);
     }
@@ -85,7 +106,15 @@ function StudentProfile() {
                                     <hr className="bar" />
                                 </div>
                                 <div className="profile-courses">
-                                    <div className="profile-course">
+                                    {profileCourses?.map((course, index) => {
+                                        return (
+                                            <div className='profile-course' key={index}>
+                                                <h3>{course.title}</h3>
+                                                <button onClick={showUnregisterModal}>Unregister</button>
+                                            </div>
+                                        )
+                                    }) || "N/A" }
+                                    {/* <div className="profile-course">
                                         <h3>Course 1</h3>
                                         <button onClick={showUnregisterModal}>Unregister</button>
                                     </div>
@@ -96,7 +125,7 @@ function StudentProfile() {
                                     <div className="profile-course">
                                         <h3>Course 3</h3>
                                         <button onClick={showUnregisterModal}>Unregister</button>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                             <div className="profile-info">
