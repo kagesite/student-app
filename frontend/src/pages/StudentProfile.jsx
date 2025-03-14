@@ -39,26 +39,41 @@ function StudentProfile() {
     }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        if (profileData?.id) {
+            const token = localStorage.getItem('token');
 
-        if (token && profileData?.id) {
-            fetch(`http://localhost:3001/students/courses/${profileData.id}`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    setProfileCourses(data);
+            console.log("Fethcing courses for profile ID:", profileData.id)
+
+            if (token && profileData?.id) {
+                fetch(`http://localhost:3001/students/courses/${profileData.id}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 })
-                .catch(error => console.error("Error fetching profile courses", error));
-        } else {
-            console.log("No course token found!")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (Array.isArray(data)) {
+                            if (data.length === 0) {
+                                console.log("Student is not registered for any courses");
+                                setProfileCourses([]);
+                            } else {
+                                setProfileCourses(data);
+                            }
+                        } else {
+                            console.error("Expected an array of courses, but received:", data);
+                            setProfileCourses([]);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching profile courses", error)
+                        setProfileCourses([])
+                    });
+            } else {
+                console.log("Waiting for profile data...")
+            }
         }
     }, [profileData])
-
-
 
     const showEditModal = () => {
         setIsEditModalOpen(true);
@@ -80,7 +95,6 @@ function StudentProfile() {
     const closeLogoutModal = () => {
         setIsLogoutModalOpen(false);
     }
-
     const handleLogout = () => {
         localStorage.removeItem('token');
         navigate('/student-login');
@@ -113,19 +127,7 @@ function StudentProfile() {
                                                 <button onClick={showUnregisterModal}>Unregister</button>
                                             </div>
                                         )
-                                    }) || "N/A" }
-                                    {/* <div className="profile-course">
-                                        <h3>Course 1</h3>
-                                        <button onClick={showUnregisterModal}>Unregister</button>
-                                    </div>
-                                    <div className="profile-course">
-                                        <h3>Course 2</h3>
-                                        <button onClick={showUnregisterModal}>Unregister</button>
-                                    </div>
-                                    <div className="profile-course">
-                                        <h3>Course 3</h3>
-                                        <button onClick={showUnregisterModal}>Unregister</button>
-                                    </div> */}
+                                    }) || "N/A"}
                                 </div>
                             </div>
                             <div className="profile-info">
@@ -234,7 +236,7 @@ function StudentProfile() {
                             </div>
                             <h2>Unregister from course</h2>
                             <div className='edit-form-container'>
-                                <form className='edit-form'>
+                                <form className='edit-form' onSubmit={() => handleUnregistration(profileData?.id, profileCourses?.id)}>
                                     <div>
                                         <label htmlFor="">Username</label>
                                         <input
