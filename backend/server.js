@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const { expressjwt: expressjwt } = require('express-jwt');
 const PORT = process.env.PORT || 3001;
 const path = require('path');
+const authMiddleware = require('./middleware/authMiddleware.js');
 
 // MIDDLEWARE
 // Have Node server the files for our built React app
@@ -60,66 +61,64 @@ app.post('/students/create', async (req, res) => {
 });
 
 // Todo: add jwt for authorization and return a token in an object with the success message
-// Todo: make sure on the frontend that a user cannot create a username with an @ symbol
-app.post('/students/login', async (req, res) => {
+// app.post('/students/login', async (req, res) => {
 
-    let userCred = req.body;
+//     let userCred = req.body;
 
-    try {
+//     try {
 
-        const hasAtSymbol = userCred.username.includes("@");
+//         const hasAtSymbol = userCred.username.includes("@");
 
-        if (hasAtSymbol) {
-            const existingUser = await pool.query('SELECT * FROM students WHERE email = $1', [userCred.email]);
+//         if (hasAtSymbol) {
+//             const existingUser = await pool.query('SELECT * FROM students WHERE email = $1', [userCred.email]);
 
-            if (existingUser.rows.length <= 0) {
-                return res.status(400).json({ message: "No Registered Account with that Email" });
-            }
+//             if (existingUser.rows.length <= 0) {
+//                 return res.status(400).json({ message: "No Registered Account with that Email" });
+//             }
 
-            bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
+//             bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
 
-                if (result === true) {
-                    const token = jwt.sign({ username: userCred.username }, process.env.JWT_PASSWORD, {
-                        algorithm: "HS256",
-                        expiresIn: "1h"
-                    });
-                    res.status(200).json({ message: "Login Sucess", token: token });
-                }
-                else {
-                    res.status(403).send({ message: "Incorrect Password" });
-                }
-            });
+//                 if (result === true) {
+//                     const token = jwt.sign({ username: userCred.username }, process.env.JWT_PASSWORD, {
+//                         algorithm: "HS256",
+//                         expiresIn: "1h"
+//                     });
+//                     res.status(200).json({ message: "Login Sucess", token: token });
+//                 }
+//                 else {
+//                     res.status(403).send({ message: "Incorrect Password" });
+//                 }
+//             });
 
-        }
-        else {
-            const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [userCred.username]);
+//         }
+//         else {
+//             const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [userCred.username]);
 
-            if (existingUser.rows.length <= 0) {
-                return res.status(400).json({ message: "No Registered Account with that Username" });
-            }
+//             if (existingUser.rows.length <= 0) {
+//                 return res.status(400).json({ message: "No Registered Account with that Username" });
+//             }
 
-            bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
+//             bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
 
-                if (result === true) {
-                    const token = jwt.sign({ username: userCred.username }, process.env.JWT_PASSWORD, {
-                        algorithm: "HS256",
-                        expiresIn: "1h"
-                    });
-                    res.status(200).json({ message: "Login Sucess", token: token });
-                }
-                else {
-                    res.status(403).send({ message: "Incorrect Password" });
-                }
-            });
+//                 if (result === true) {
+//                     const token = jwt.sign({ username: userCred.username }, process.env.JWT_PASSWORD, {
+//                         algorithm: "HS256",
+//                         expiresIn: "1h"
+//                     });
+//                     res.status(200).json({ message: "Login Sucess", token: token });
+//                 }
+//                 else {
+//                     res.status(403).send({ message: "Incorrect Password" });
+//                 }
+//             });
 
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Server Error" });
-    }
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ message: "Server Error" });
+//     }
 
-});
-
+// });
 
 // Todo: It's probably best practice to encrypt admin passwords, so encrypt their password in the database
 // Checks for admin details in database to login. If credentials match in the database, returns sucessful message and jwt token
@@ -266,7 +265,6 @@ app.get('/students/email/:email',
 
     });
 
-// Updates specified student user details by student_id | Returns a succesful update message and updated student object
 app.put('/students/update/:student_id',
     expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
     async (req, res) => {
@@ -400,73 +398,47 @@ app.get('/students/courses/:student_id',
     });
 
 // Registers a student to a course provided the student_id and course_id in the request body || Returns succesful message and the object created in the enrollments table
-// app.post('/students/register',
-//     expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
-//     async (req, res) => {
-
-//         const { username, email, course_id } = req.body;
-
-//         try {
-
-//             const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE email = $1 AND course_id = $2', [email, course_id]);
-
-//             if (existingRegistration.rows.length > 0) {
-//                 return res.status(400).json({ message: "Student Already Enrolled in This Course" });
-//             }
-//             else {
-
-//                 const studentEnrollment = await pool.query('INSERT INTO enrollments (student_id, course_id) VALUES ($1, $2) RETURNING *', [student_id, course_id]);
-//                 res.status(200).json({ message: "Successfully Enrolled in Course", enrollment: studentEnrollment.rows[0] });
-//             }
 
 
-
-//         } catch (error) {
-//             console.log(error);
-//             res.status(500).json({ message: "Server Error" });
-//         }
-
-//     });
-
-app.post('/students/register', 
-    expressjwt({secret: process.env.JWT_PASSWORD, algorithms: ["HS256"]}),
+app.post('/students/register',
+    expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
     async (req, res) => {
 
-        const {username, email, course_id} = req.body;
+        const { username, email, course_id } = req.body;
 
         try {
 
             const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [username]);
 
             if (existingUser.rows.length <= 0) {
-                return res.status(400).json({message: "Student Account not Found"});
+                return res.status(400).json({ message: "Student Account not Found" });
             }
-            
+
             if (existingUser.rows[0].username !== username) {
-                return res.status(400).json({message: "Incorrect Username"});
+                return res.status(400).json({ message: "Incorrect Username" });
             }
-            
+
             if (existingUser.rows[0].email !== email) {
-                return res.status(400).json({message: "Incorrect Email"});
+                return res.status(400).json({ message: "Incorrect Email" });
             }
-            
+
             const student_id = existingUser.rows[0].id;
 
             const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
 
             if (existingRegistration.rows.length > 0) {
-                return res.status(400).json({message: "Student Already Enrolled in This Course"});
+                return res.status(400).json({ message: "Student Already Enrolled in This Course" });
             }
             else {
                 const studentEnrollment = await pool.query('INSERT INTO enrollments (student_id, course_id) VALUES ($1, $2) RETURNING *', [student_id, course_id]);
-                res.status(200).json({message: "Successfully Enrolled in Course", enrollment: studentEnrollment.rows[0]});
+                res.status(200).json({ message: "Successfully Enrolled in Course", enrollment: studentEnrollment.rows[0] });
             }
         } catch (error) {
             console.log(error);
-            res.status(500).json({message: "Server Error"});
+            res.status(500).json({ message: "Server Error" });
         }
 
-});
+    });
 
 // Unregisters or deletes a student from a course | Returns succesful message and deleted enrollment object
 app.delete('/students/unregister',
@@ -600,6 +572,68 @@ app.delete('/courses/delete/:course_id',
             return res.status(500).json({ message: "Server Error" });
         }
     });
+
+
+
+// ALL OF KAGES CALLS
+app.post('/students/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const existingUser = await pool.query(
+            "SELECT * FROM students WHERE username = $1", [username]
+        );
+        if (existingUser.rows.length === 0) {
+            return res.status(400).json({ message: "No registered account with that username" });
+        }
+
+        const user = existingUser.rows[0];
+
+        // Compare the provided password with the hasehd password in the database
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(403).json({ message: "Incorrect password" });
+        }
+
+        const token = jwt.sign(
+            { id: user.id, username: user.username },
+            process.env.JWT_PASSWORD,
+            { algorithm: "HS256", expiresIn: "1h" },
+        );
+
+        res.status(200).json({ message: "Login success", token: token });
+
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+app.get("/student/profile", authMiddleware, async (req, res) => {
+    try {
+        console.log("Decoded JWT user:", req.user);
+
+        const user = await pool.query(
+            "SELECT * FROM students WHERE id = $1", [req.user.id]
+        )
+
+        if (user.rows.length === 0) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        res.json({ user: user.rows[0] });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+})
+
+
+
+
+
+
 
 app.listen(PORT, () => {
     console.log(`Server listening on port: ${PORT}`);
