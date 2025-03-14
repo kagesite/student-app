@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import StudentDashHeader from '../components/StudentDashHeader'
 import '../styles/Profile.css';
 
@@ -6,7 +7,38 @@ function StudentProfile() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isUnregsiterModalOpen, setIsUnregisteredModalOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    const [profileData, setProfileData] = useState(null) // Stores Profile Data
+    const [loading, setLoading] = useState(true) // For loading state
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            setLoading(true);
+            fetch('http://localhost:3001/student/profile', {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setProfileData(data.user);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error("Error fetching profile", error);
+                    setLoading(false);
+                })
+        } else {
+            setLoading(false);
+            console.log("No token found!");
+        }
+    }, []);
+    
+    
+    
     const showEditModal = () => {
         setIsEditModalOpen(true);
     }
@@ -28,6 +60,10 @@ function StudentProfile() {
         setIsLogoutModalOpen(false);
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/student-login');
+    }
 
     return (
         <div>
@@ -38,7 +74,7 @@ function StudentProfile() {
                     <div className="profile-container">
                         <div className="profile-top">
                             <img src="/profile-avatar.png" className="profile-img" alt="" />
-                            <h3 className='profile-name'>joemama02</h3>
+                            <h3 className='profile-name'>{loading ? 'Loading...' : profileData?.username}</h3>
                             <button className='logout-btn' onClick={showLogoutModal}>Logout</button>
                             <hr className="bar" />
                         </div>
@@ -71,25 +107,25 @@ function StudentProfile() {
                                 <div className="name-info">
                                     <div className="info-container">
                                         <h3>First Name</h3>
-                                        <p>Joe</p>
+                                        <p>{profileData?.first_name || "N/A"}</p>
                                     </div>
                                     <div className="info-container">
                                         <h3>Last Name</h3>
-                                        <p>Mama</p>
+                                        <p>{profileData?.last_name || "N/A"}</p>
                                     </div>
                                 </div>
                                 <div className="contact-info">
                                     <div className="info-container">
                                         <h3>Email</h3>
-                                        <p>joemama@test.com</p>
+                                        <p>{profileData?.email || "N/A"}</p>
                                     </div>
                                     <div className="info-container">
                                         <h3>Address</h3>
-                                        <p>123 north 456 west</p>
+                                        <p>{profileData?.address || "N/A"}</p>
                                     </div>
                                     <div className="info-container">
                                         <h3>Telephone</h3>
-                                        <p>123-456-7890</p>
+                                        <p>{profileData?.telephone || "N/A"}</p>
                                     </div>
                                 </div>
                             </div>
@@ -209,7 +245,7 @@ function StudentProfile() {
                             <div className='logout-modal-btns-container'>
                                 <div className='logout-btns'>
                                     <button onClick={closeLogoutModal}>Stay</button>
-                                    <button>Logout</button>
+                                    <button onClick={handleLogout}>Logout</button>
                                 </div>
                             </div>
                         </div>
