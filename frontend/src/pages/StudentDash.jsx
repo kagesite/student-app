@@ -3,6 +3,7 @@ import TestFooter from '../components/TestFooter'
 import StudentDashHeader from '../components/StudentDashHeader'
 import "../styles/StudentDash.css"
 import "../styles/CourseModal.css"
+import { useNavigate } from 'react-router-dom'
 
 function StudentDash() {
     const [courses, setCourses] = useState([])
@@ -14,6 +15,7 @@ function StudentDash() {
         email: "",
         course_id: ""
     })
+    const navigate = useNavigate();
 
     // FETCHING ALL COURSES
     useEffect(() => {
@@ -77,6 +79,8 @@ function StudentDash() {
                     username: "",
                     email: "",
                 });
+                closeModal();
+                navigate('/student-profile')
             } else {
                 return response.json().then(data => {
                     console.error("Failed to enroll!", data.message);
