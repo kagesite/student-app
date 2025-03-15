@@ -11,6 +11,13 @@ function StudentProfile() {
     const [profileCourses, setProfileCourses] = useState(null);
     const [loading, setLoading] = useState(true) // For loading state
     const [unregisterCourse, setUnregisterCourse] = useState(null);
+    const [editFormData, setEditFormData] = useState({
+        first_name: "",
+        last_name: "",
+        email: "",
+        address: "",
+        telephone: "",
+    })
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -78,10 +85,59 @@ function StudentProfile() {
     }, [profileData])
 
     const showEditModal = () => {
+        if (profileData) {
+            setEditFormData({
+                first_name: profileData.first_name || "",
+                last_name: profileData.last_name || "",
+                email: profileData.email || "",
+                address: profileData.address || "",
+                telephone: profileData.telephone || "",
+            })
+        }
         setIsEditModalOpen(true);
     }
     const closeEditModal = () => {
         setIsEditModalOpen(false);
+    }
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }))
+    }
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+
+        try {
+            const token = localStorage.getItem("token");
+
+            fetch("http://localhost:3001/student/profile", {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(editFormData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to update profile");
+                    }
+
+                    const updatedProfile = response.json();
+
+                    setProfileData((prevProfile) => ({
+                        ...prevProfile,
+                        ...editFormData,
+                    }));
+                    setIsEditModalOpen(false)
+                })
+        } catch (error) {
+            console.error("Error updating profile:", error.message);
+        }
     }
 
     const showUnregisterModal = (course) => {
@@ -229,16 +285,15 @@ function StudentProfile() {
                             </div>
                             <h2>Edit Profile Info</h2>
                             <div className='edit-form-container'>
-                                <form className='edit-form'>
+                                <form className='edit-form' onSubmit={handleFormSubmit}>
                                     <div>
                                         <label htmlFor="">First Name</label>
                                         <input
                                             type="text"
                                             name='first_name'
-                                            // onChange={}
-                                            // value={}
+                                            onChange={handleInputChange}
+                                            value={editFormData.first_name}
                                             placeholder='First name'
-                                            required
                                         />
                                     </div>
                                     <div>
@@ -246,32 +301,39 @@ function StudentProfile() {
                                         <input
                                             type="text"
                                             name='last_name'
-                                            // onChange={}
-                                            // value={}
+                                            onChange={handleInputChange}
+                                            value={editFormData.last_name}
                                             placeholder='Last name'
-                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Email</label>
+                                        <input
+                                            type="email"
+                                            name='email'
+                                            onChange={handleInputChange}
+                                            value={editFormData.email}
+                                            placeholder='Email'
                                         />
                                     </div>
                                     <div>
                                         <label htmlFor="">Address</label>
                                         <input
                                             type="text"
-                                            name='email'
-                                            // onChange={}
-                                            // value={}
-                                            placeholder='Email'
-                                            required
+                                            name='address'
+                                            onChange={handleInputChange}
+                                            value={editFormData.address}
+                                            placeholder='Address'
                                         />
                                     </div>
                                     <div>
                                         <label htmlFor="">Telephone</label>
                                         <input
-                                            type="text"
-                                            name='email'
-                                            // onChange={}
-                                            // value={}
-                                            placeholder='Email'
-                                            required
+                                            type="phone"
+                                            name='telephone'
+                                            onChange={handleInputChange}
+                                            value={editFormData.telephone}
+                                            placeholder='Telephone'
                                         />
                                     </div>
                                     <button type='submit'>Confirm</button>
