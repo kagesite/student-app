@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import '../styles/StudentSignup.css';
 import '../styles/Form.css';
 import TestFooter from '../components/TestFooter';
+import { Link } from 'react-router-dom';
 
 function StudentSignup() {
     const [formData, setFormData] = useState({
