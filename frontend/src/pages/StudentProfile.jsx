@@ -166,7 +166,7 @@ function StudentProfile() {
                             <hr className="bar" />
                         </div>
                         <div className="profile-main">
-                            <div className="profile-courses">
+                            <div className="profile-course-container">
                                 <div className="profile-heading">
                                     <h3 className=''>Courses</h3>
                                     <hr className="bar" />

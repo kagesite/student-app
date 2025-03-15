@@ -79,6 +79,7 @@ function StudentDash() {
                     username: "",
                     email: "",
                 });
+                alert("Registration Successful!")
                 closeModal();
                 navigate('/student-profile')
             } else {
