@@ -629,6 +629,40 @@ app.get("/student/profile", authMiddleware, async (req, res) => {
     }
 })
 
+app.put('/student/profile', authMiddleware, async (req, res) => {
+    try {
+        const studentId = req.user.id;
+        const { first_name, last_name, email, address, telephone, } = req.body;
+
+        // Get existing student record
+        const studentQuery = 'SELECT first_name, last_name, email, address, telephone FROM students where id = $1';
+        const { rows } = await pool.query(studentQuery, [studentId]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        const updatedFirstName = first_name || rows[0].first_name;
+        const updatedLastName = last_name || rows[0].last_name;
+        const updatedEmail = email || rows[0].email;
+        const updatedAddress = address || rows[0].address;
+        const udpatedTelephone = telephone || rows[0].telephone;
+
+        const updatedQuery = `
+            UPDATE students 
+            SET first_name = $1, last_name = $2, email = $3, address = $4, telephone = $5
+            WHERE id = $6
+            RETURNING *
+        `;
+
+        const updatedStudent = await pool.query(updatedQuery, [updatedFirstName, updatedLastName, updatedEmail, updatedAddress, udpatedTelephone, studentId]);
+
+        res.json({ message: "Profile updated successfully", student: updatedStudent.rows[0] })
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+})
 
 
 
