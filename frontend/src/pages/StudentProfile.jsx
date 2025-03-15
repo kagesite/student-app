@@ -5,11 +5,12 @@ import '../styles/Profile.css';
 
 function StudentProfile() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isUnregsiterModalOpen, setIsUnregisteredModalOpen] = useState(false);
+    const [isUnregisterModalOpen, setIsUnregisteredModalOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [profileData, setProfileData] = useState(null) // Stores Profile Data
     const [profileCourses, setProfileCourses] = useState(null);
     const [loading, setLoading] = useState(true) // For loading state
+    const [unregisterCourse, setUnregisterCourse] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,6 +39,7 @@ function StudentProfile() {
         }
     }, []);
 
+    // Get specific courses that the current student has registered for.
     useEffect(() => {
         if (profileData?.id) {
             const token = localStorage.getItem('token');
@@ -82,11 +84,61 @@ function StudentProfile() {
         setIsEditModalOpen(false);
     }
 
-    const showUnregisterModal = () => {
+    const showUnregisterModal = (course) => {
+        const selectedCourse = profileCourses.find(c => c.course_id === course.course_id);
+        setUnregisterCourse(selectedCourse);
         setIsUnregisteredModalOpen(true);
     }
     const closeUnregisterModal = () => {
+        console.log("Closing unreg modal...")
         setIsUnregisteredModalOpen(false);
+        setUnregisterCourse(null);
+    }
+    const handleUnregistration = (e, student_id, course_id) => {
+        e.preventDefault()
+
+        console.log(student_id);
+        console.log(course_id);
+
+        const token = localStorage.getItem('token');
+
+        fetch('http://localhost:3001/students/unregister', {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({ student_id, course_id }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.message === "Unregistration Successful") {
+                    // setProfileCourses(prevCourses => prevCourses.filter(course => course.course_id !== course_id))
+                    fetchCourses();
+                    closeUnregisterModal();
+                }
+            })
+            .catch(error => {
+                console.error("Error unregistering from coures:", error);
+            })
+    }
+
+    const fetchCourses = () => {
+        console.log("Fetching courses")
+        if (!profileData?.id) return;
+        const token = localStorage.getItem("token");
+        if (token && profileData?.id) {
+            fetch(`http://localhost:3001/students/courses/${profileData.id}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => setProfileCourses(Array.isArray(data) ? data : []))
+                .catch(error => console.error("Error fethcing profile courses", error))
+        }
     }
 
     const showLogoutModal = () => {
@@ -124,7 +176,9 @@ function StudentProfile() {
                                         return (
                                             <div className='profile-course' key={index}>
                                                 <h3>{course.title}</h3>
-                                                <button onClick={showUnregisterModal}>Unregister</button>
+                                                <button onClick={() => {
+                                                    showUnregisterModal(course);
+                                                }}>Unregister</button>
                                             </div>
                                         )
                                     }) || "N/A"}
@@ -228,7 +282,7 @@ function StudentProfile() {
                     </div>
                 )}
 
-                {isUnregsiterModalOpen && (
+                {isUnregisterModalOpen && (
                     <div className='modal-overlay'>
                         <div className="edit-modal">
                             <div className="modal-top">
@@ -236,7 +290,7 @@ function StudentProfile() {
                             </div>
                             <h2>Unregister from course</h2>
                             <div className='edit-form-container'>
-                                <form className='edit-form' onSubmit={() => handleUnregistration(profileData?.id, profileCourses?.id)}>
+                                <form className='edit-form' onSubmit={(e) => handleUnregistration(e, profileData.id, unregisterCourse.course_id)}>
                                     <div>
                                         <label htmlFor="">Username</label>
                                         <input
