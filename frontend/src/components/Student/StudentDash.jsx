@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import TestFooter from '../components/TestFooter'
-import StudentDashHeader from '../components/StudentDashHeader'
-import "../styles/StudentDash.css"
-import "../styles/CourseModal.css"
+import TestFooter from '../TestFooter'
+import StudentDashHeader from './StudentDashHeader'
+import "../../styles/StudentDash.css"
+import "../../styles/CourseModal.css"
 import { useNavigate } from 'react-router-dom'
 
 function StudentDash() {

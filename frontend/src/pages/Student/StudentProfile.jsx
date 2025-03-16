@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import StudentDashHeader from '../components/StudentDashHeader'
-import '../styles/Profile.css';
+import StudentDashHeader from '../../components/Student/StudentDashHeader'
+import '../../styles/Profile.css';
 
 function StudentProfile() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);

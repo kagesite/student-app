@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import Header from "../components/Header";
-import '../styles/StudentSignup.css';
-import '../styles/Form.css';
-import TestFooter from '../components/TestFooter';
-import { Link } from 'react-router-dom';
+import Header from "../Header";
+import '../../styles/StudentSignup.css';
+import '../../styles/Form.css';
+import { useNavigate } from 'react-router-dom';
 
-function StudentSignup() {
+function StudentHomeSignup() {
     const [formData, setFormData] = useState({
         username: "",
         first_name: "",
@@ -13,6 +12,7 @@ function StudentSignup() {
         email: "",
         password: "",
     })
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,7 +39,8 @@ function StudentSignup() {
                     last_name: "",
                     email: "",
                     password: "",
-                })
+                });
+                navigate('/student-dash');
             } else {
                 console.error("Failed to registered student!")
                 alert("Username or email are already linked to an account. Try again")
@@ -58,7 +59,7 @@ function StudentSignup() {
 
     return (
         <div>
-            <Header />
+            {/* <Header /> */}
             <div className='form-container'>
                 <h2 className='head-label'>Student Signup</h2>
                 <form onSubmit={handleSubmit}>
@@ -122,9 +123,9 @@ function StudentSignup() {
                 </form>
             </div>
             {/* TEST FOOTER IS TEMPORARY */}
-            <TestFooter />
+            {/* <TestFooter /> */}
         </div>
     )
 }
 
-export default StudentSignup
+export default StudentHomeSignup

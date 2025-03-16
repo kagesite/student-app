@@ -1,18 +1,19 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import StudentSignup from './pages/StudentSignup';
-import StudentLogin from './pages/StudentLogin';
-import AdminLogin from './pages/AdminLogin';
-import StudentDash from './pages/StudentDash';
-import AdminDash from './pages/AdminDash';
+import StudentSignup from './components/Student/StudentHomeSignup';
+import StudentLogin from './components/Student/StudentHomeLogin';
+import AdminLogin from './pages/Admin/AdminLogin';
+import StudentDash from './components/Student/StudentDash';
+import AdminDash from './pages/Admin/AdminDash';
 import "./styles/index.css"
-import StudentProfile from './pages/StudentProfile';
+import StudentProfile from './pages/Student/StudentProfile';
+import StudentRoot from './pages/Student/StudentRoot';
 
 
 function App() {
     return (
         <Routes>
-            <Route path="/" element={<StudentSignup />} />
+            <Route path="/" element={<StudentRoot />} />
             <Route path="student-login" element={<StudentLogin />} />
             <Route path="admin-login" element={<AdminLogin />} />
             <Route path="student-dash" element={<StudentDash />} />

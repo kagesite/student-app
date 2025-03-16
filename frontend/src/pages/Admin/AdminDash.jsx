@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Header from '../components/Header'
-import TestFooter from '../components/TestFooter'
-import '../styles/AdminDash.css'
+import Header from '../../components/Header'
+import TestFooter from '../../components/TestFooter'
+import '../../styles/AdminDash.css'
 
 function AdminDash() {
     const [courses, setCourses] = useState([]);
