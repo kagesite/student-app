@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Header from "../Header";
-import '../../styles/StudentSignup.css';
+import '../../styles/Student/StudentSignup.css';
 import '../../styles/Form.css';
 import { useNavigate } from 'react-router-dom';
 
