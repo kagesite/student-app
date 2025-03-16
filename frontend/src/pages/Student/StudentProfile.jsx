@@ -205,7 +205,7 @@ function StudentProfile() {
     }
     const handleLogout = () => {
         localStorage.removeItem('token');
-        navigate('/student-login');
+        navigate('/');
     }
 
     return (

@@ -1,82 +1,79 @@
 import React, { useState } from 'react'
-import Header from '../../components/Header'
 import { useNavigate } from 'react-router-dom'
+import Header from '../Header';
 
-function AdminLogin() {
+function StudentLogin() {
     const [formData, setFormData] = useState({
-        email: "",
+        username: "",
         password: "",
     })
 
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         try {
-            const response = await fetch("http://localhost:3001/admins/login", {
+            const response = await fetch('http://localhost:3001/students/login', {
                 method: "POST",
                 headers: {
-                    "Content-type": "application/json",
+                    "Content-type": "application/json"
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(formData)
             });
 
-            const data = await response.json();
-
-            console.log("Server response:", data);
+            const data = await response.json()
+            // console.log(response);
 
             if (response.ok) {
-                console.log("Admin Login Successful!");
-                console.log("Received Token:", data.token);
-
+                console.log("Login successful!");
+                console.log("Received Token", data.token);
+                
                 if (data.token) {
                     localStorage.setItem("token", data.token);
                     console.log("Token stored in localStorage");
-                    navigate("/admin-dash");
+                    // Automatically redirect to student dashboard
+                    navigate('/student-dash')
                 }
-
+                
+                console.log(formData);
                 setFormData({
-                    email: "",
+                    username: "",
                     password: "",
-                });
+                })
             } else {
-                console.error("Failed to login as Admin");
-                alert("Failed to login as Admin");
+                console.error("Failed to login");
+                alert("Failed to login")
                 setFormData({
-                    email: "",
+                    username: "",
                     password: "",
-                });
+                })
             }
         } catch (error) {
-            console.error("Login error:", error);
+            console.error(error);
         }
     }
 
-    
-    
+
+
     return (
         <>
             <Header />
             <div className='form-container'>
-                <h2>Admin Login</h2>
+                <h2>Student Login</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Email:</label>
+                        <label>Username:</label>
                         <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
+                            type="text"
+                            name='username'
+                            value={formData.username}
                             onChange={handleChange}
-                            placeholder='Email'
+                            placeholder='Username'
                             required
                         />
                     </div>
@@ -91,11 +88,13 @@ function AdminLogin() {
                             required
                         />
                     </div>
-                    <button type="submit">Login</button>
+                    {/* <Link to="/student-dash"> */}
+                        <button type="submit">Login</button>
+                    {/* </Link> */}
                 </form>
             </div>
         </>
     )
 }
 
-export default AdminLogin
+export default StudentLogin

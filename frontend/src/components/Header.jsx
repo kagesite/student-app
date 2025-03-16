@@ -11,11 +11,11 @@ function Header() {
                 <h1>TK COURSES</h1>
             </a>
             <div className='btns-container'>
-                <Link to="/student-login">
-                    <button>Student Login</button>
+                <Link to="/">
+                    <button>Students</button>
                 </Link>
-                <Link to="/admin-login">
-                    <button>Admin Login</button>
+                <Link to="/admin/login">
+                    <button>Admins</button>
                 </Link>
             </div>
         </header>
