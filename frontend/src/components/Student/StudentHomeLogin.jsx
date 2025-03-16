@@ -64,6 +64,7 @@ function StudentHomeLogin() {
             {/* <Header /> */}
             <div className='form-container'>
                 <h2>Student Login</h2>
+                {/* <p>Welcome to KT Courses!</p> */}
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label>Username:</label>

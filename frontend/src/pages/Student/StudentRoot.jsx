@@ -9,6 +9,8 @@ function StudentRoot() {
     return (
         <div>
             <Header />
+            <div>
+            </div>
             <div className='container'>
                 <div>
                     <StudentHomeSignup />

@@ -20,6 +20,7 @@ function StudentDash() {
     // FETCHING ALL COURSES
     useEffect(() => {
         const token = localStorage.getItem("token");
+        console.log(token) // DEBUGGING
 
         fetch('http://localhost:3001/courses', {
             method: "GET",
