@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const { expressjwt: expressjwt } = require('express-jwt');
 const PORT = process.env.PORT || 3001;
 const path = require('path');
-const authMiddleware = require('./middleware/authMiddleware.js');
+const AuthMiddleware = require('./middleware/authMiddleware.js');
 
 // MIDDLEWARE
 // Have Node server the files for our built React app
@@ -122,7 +122,7 @@ app.post('/students/create', async (req, res) => {
 
 // Todo: It's probably best practice to encrypt admin passwords, so encrypt their password in the database
 // Checks for admin details in database to login. If credentials match in the database, returns sucessful message and jwt token
-app.get('/admins/login', async (req, res) => {
+app.post('/admins/login', async (req, res) => {
 
     const adminCred = req.body;
 
@@ -137,9 +137,11 @@ app.get('/admins/login', async (req, res) => {
             res.status(400).json({ message: "Incorrect Password" });
         }
         else {
-            const token = jwt.sign({ username: adminCred.username }, process.env.JWT_PASSWORD, {
+            const token = jwt.sign(
+                { id: existingAdmin.rows[0].id, username: existingAdmin.rows[0].username }
+                , process.env.JWT_PASSWORD, {
                 algorithm: "HS256",
-                expiresIn: "1min"
+                expiresIn: "1h"
             });
             res.status(200).json({ message: "Successful Login", token: token });
         }
@@ -472,12 +474,12 @@ app.get('/students',
         try {
 
             const studentsArray = await pool.query('SELECT * FROM students ORDER BY id ASC');
-
             if (studentsArray.rows.length <= 0) {
                 return res.status(400).json({ message: "Student Table Does NOT Exist" });
             }
-        } catch {
-
+            return res.status(200).json(studentsArray.rows)
+        } catch (error) {
+            console.error("Error getting students:", error);
         }
     });
 
@@ -609,9 +611,9 @@ app.post('/students/login', async (req, res) => {
     }
 });
 
-app.get("/student/profile", authMiddleware, async (req, res) => {
+app.get("/student/profile", AuthMiddleware, async (req, res) => {
     try {
-        console.log("Decoded JWT user:", req.user);
+        console.log("Decoded JWT user:", req.user.id);
 
         const user = await pool.query(
             "SELECT * FROM students WHERE id = $1", [req.user.id]
@@ -629,7 +631,8 @@ app.get("/student/profile", authMiddleware, async (req, res) => {
     }
 })
 
-app.put('/student/profile', authMiddleware, async (req, res) => {
+// EDIT STUDENTS INFO FROM STUDENT PROFILE
+app.put('/student/profile', AuthMiddleware, async (req, res) => {
     try {
         const studentId = req.user.id;
         const { first_name, last_name, email, address, telephone, } = req.body;
@@ -664,7 +667,72 @@ app.put('/student/profile', authMiddleware, async (req, res) => {
     }
 })
 
+// EDIT STUDENT INFO FROM ADMIN DASHBOARD
+app.put('/admin/student/update/:id', AuthMiddleware, async (req, res) => {
+    try {
+        const student_id = req.params.id;
 
+        const result = await pool.query("SELECT * FROM students WHERE id = $1", [student_id])
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        const { first_name, last_name, email, address, telephone, } = result.rows[0];
+
+        console.log(first_name, last_name, email, address, telephone);
+
+        // Get existing student record
+        // const studentQuery = 'SELECT first_name, last_name, email, address, telephone FROM students where id = $1';
+        // const { rows } = await pool.query(studentQuery, [studentId]);
+
+        // if (rows.length === 0) {
+        //     return res.status(404).json({ message: "Student not found" });
+        // }
+
+        // const updatedFirstName = first_name || rows[0].first_name;
+        // const updatedLastName = last_name || rows[0].last_name;
+        // const updatedEmail = email || rows[0].email;
+        // const updatedAddress = address || rows[0].address;
+        // const udpatedTelephone = telephone || rows[0].telephone;
+
+        // const updatedQuery = `
+        //     UPDATE students 
+        //     SET first_name = $1, last_name = $2, email = $3, address = $4, telephone = $5
+        //     WHERE id = $6
+        //     RETURNING *
+        // `;
+
+        // const updatedStudent = await pool.query(updatedQuery, [updatedFirstName, updatedLastName, updatedEmail, updatedAddress, udpatedTelephone, studentId]);
+
+        // res.json({ message: "Profile updated successfully", student: updatedStudent.rows[0] })
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+})
+
+app.get("/admin/profile", AuthMiddleware, async (req, res) => {
+    try {
+        console.log("Decoded JWT Admin:", req.user.id);
+
+        const user = await pool.query(
+            "SELECT * FROM admins WHERE id = $1", [req.user.id]
+        )
+
+        // console.log('user:', user.rows[0].username);
+
+        if (user.rows.length === 0) {
+            return res.status(400).json({ message: "user not found" });
+        }
+
+        res.json({ user: user.rows[0] });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", });
+    }
+})
 
 
 

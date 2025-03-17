@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 function AdminLogin() {
     const [formData, setFormData] = useState({
-        email: "",
+        username: "",
         password: "",
     })
 
@@ -41,18 +41,18 @@ function AdminLogin() {
                 if (data.token) {
                     localStorage.setItem("token", data.token);
                     console.log("Token stored in localStorage");
-                    navigate("/admin-dash");
+                    navigate("/admin/dashboard");
                 }
 
                 setFormData({
-                    email: "",
+                    username: "",
                     password: "",
                 });
             } else {
                 console.error("Failed to login as Admin");
                 alert("Failed to login as Admin");
                 setFormData({
-                    email: "",
+                    username: "",
                     password: "",
                 });
             }
@@ -70,13 +70,13 @@ function AdminLogin() {
                 <h2>Admin Login</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Email:</label>
+                        <label>Username:</label>
                         <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
+                            type="text"
+                            name="username"
+                            value={formData.username}
                             onChange={handleChange}
-                            placeholder='Email'
+                            placeholder='Username'
                             required
                         />
                     </div>

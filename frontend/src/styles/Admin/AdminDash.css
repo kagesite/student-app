@@ -20,6 +20,48 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.course-container-head, .student-container-head {
+    /* background: lightpink; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.course-container-head h2, .student-container-head h2{
+    margin: 0;
+}
+.course-container-head button {
+    /* background-color: #fbfef9; */
+    color: #000;
+    border: 2px solid #000004;
+    border-radius: 30px;
+    font-size: 32px;
+    font-weight: 600;
+    padding: 0px 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.course-container-head button:hover {
+    background-color: #329F5b;
+    color: white;
+}
+
+.student-container-head button {
+    color: #fff;
+    background: #329F5b;
+    border: 2px solid #fff;
+    border-radius: 30px;
+    font-size: 32px;
+    font-weight: 600;
+    padding: 0px 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.student-container-head button:hover {
+    background: white;
+    color: #329F5b;
+}
+
 .students-container {
     width: 50%;
     border-radius: 12px;

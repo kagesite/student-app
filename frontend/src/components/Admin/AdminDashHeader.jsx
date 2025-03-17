@@ -4,11 +4,11 @@ function StudentDashHeader() {
     return (
         <div>
             <header className="header">
-                <a href="/student/dashboard">
+                <a href="/admin/dashboard">
                     <h1>TK COURSES</h1>
                 </a>
                 <div>
-                <a href="/student/profile"><div className='student-header-profile'></div></a>
+                    <a href="/admin/profile"><div className='admin-header-profile'></div></a>
                 </div>
             </header>
         </div>

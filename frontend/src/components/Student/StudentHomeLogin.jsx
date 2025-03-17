@@ -36,7 +36,7 @@ function StudentHomeLogin() {
                     localStorage.setItem("token", data.token);
                     console.log("Token stored in localStorage");
                     // Automatically redirect to student dashboard
-                    navigate('/student-dash')
+                    navigate('/student/dashboard')
                 }
                 
                 console.log(formData);

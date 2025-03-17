@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Header from '../../components/Header'
+import AdminDashHeader from '../../components/Admin/AdminDashHeader'
 import TestFooter from '../../components/TestFooter'
 import '../../styles/Admin/AdminDash.css'
 
@@ -14,7 +14,15 @@ function AdminDash() {
 
     // FETCHING ALL COURSES
     useEffect(() => {
-        fetch('http://localhost:3001/courses')
+        const token = localStorage.getItem("token");
+
+        fetch('http://localhost:3001/courses', {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
             .then(response => response.json())
             .then(data => setCourses(data))
             .catch(error => console.error("Error fetching courses:", error));
@@ -22,7 +30,16 @@ function AdminDash() {
 
     // FETCHINGNG ALL STUDENTS
     useEffect(() => {
-        fetch('http://localhost:3001/students')
+
+        const token = localStorage.getItem("token");
+        console.log(token);
+        fetch('http://localhost:3001/students', {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 console.log("Students api returned:", data); // DEBUGGING
@@ -50,6 +67,21 @@ function AdminDash() {
     }
 
     const showEditModal = (id) => {
+        const editStudent = students.find(student => student.id === id);
+        setEditStudent(editStudent);
+        console.log(editStudent.username);
+
+
+        // if (editStudent) {
+        //     setEditProfileData({
+        //         first_name: editStudent.first_name || "",
+        //         last_name: editStudent.last_name || "",
+        //         email: editStudent.email || "",
+        //         address: editStudent.address || "",
+        //         telephone: editStudent.telephone || "",
+        //     })
+
+        // }
         setIsCoursesModalOpen(false);
         setIsEditModalOpen(true);
     }
@@ -61,12 +93,17 @@ function AdminDash() {
 
     return (
         <div>
-            <Header />
+            <AdminDashHeader />
             <main>
                 <h1 className='page-title'>Admin Dashboard</h1>
                 <div className="admin-container">
                     <div className="courses-container">
-                        <h2>All Courses</h2>
+                        <div className='course-container-head'>
+                            <h2>All Courses</h2>
+                            <div>
+                                <button>+</button>
+                            </div>
+                        </div>
                         <ul className='courses-list'>
                             {courses.map(course => {
                                 return (
@@ -79,7 +116,12 @@ function AdminDash() {
                         </ul>
                     </div>
                     <div className="students-container">
-                        <h2>All Students</h2>
+                        <div className="student-container-head">
+                            <h2>All Students</h2>
+                            <div>
+                                <button>+</button>
+                            </div>
+                        </div>
                         <ul className='students-list'>
                             {students.map(student => {
                                 return (
@@ -152,16 +194,15 @@ function AdminDash() {
                             </div>
                             <h2>Edit Profile Info</h2>
                             <div className='edit-form-container'>
-                                <form className='edit-form'>
+                                <form className='edit-form' onSubmit={handleFormSubmit}>
                                     <div>
                                         <label htmlFor="">First Name</label>
                                         <input
                                             type="text"
                                             name='first_name'
-                                            // onChange={}
-                                            // value={}
+                                            onChange={handleInputChange}
+                                            value={editProfileData.first_name}
                                             placeholder='First name'
-                                            required
                                         />
                                     </div>
                                     <div>
@@ -169,32 +210,39 @@ function AdminDash() {
                                         <input
                                             type="text"
                                             name='last_name'
-                                            // onChange={}
-                                            // value={}
+                                            onChange={handleInputChange}
+                                            value={editProfileData.last_name}
                                             placeholder='Last name'
-                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Email</label>
+                                        <input
+                                            type="email"
+                                            name='email'
+                                            onChange={handleInputChange}
+                                            value={editProfileData.email}
+                                            placeholder='Email'
                                         />
                                     </div>
                                     <div>
                                         <label htmlFor="">Address</label>
                                         <input
                                             type="text"
-                                            name='email'
-                                            // onChange={}
-                                            // value={}
-                                            placeholder='Email'
-                                            required
+                                            name='address'
+                                            onChange={handleInputChange}
+                                            value={editProfileData.address}
+                                            placeholder='Address'
                                         />
                                     </div>
                                     <div>
                                         <label htmlFor="">Telephone</label>
                                         <input
-                                            type="text"
-                                            name='email'
-                                            // onChange={}
-                                            // value={}
-                                            placeholder='Email'
-                                            required
+                                            type="phone"
+                                            name='telephone'
+                                            onChange={handleInputChange}
+                                            value={editProfileData.telephone}
+                                            placeholder='Telephone'
                                         />
                                     </div>
                                     <button type='submit'>Confirm</button>

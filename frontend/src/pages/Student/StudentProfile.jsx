@@ -216,7 +216,7 @@ function StudentProfile() {
                 <div className="main-container">
                     <div className="profile-container">
                         <div className="profile-top">
-                            <img src="/profile-avatar.png" className="profile-img" alt="" />
+                        <div className='student-profile-icon'></div>
                             <h3 className='profile-name'>{loading ? 'Loading...' : profileData?.username}</h3>
                             <button className='logout-btn' onClick={showLogoutModal}>Logout</button>
                             <hr className="bar" />

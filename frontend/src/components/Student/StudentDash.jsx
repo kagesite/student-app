@@ -82,7 +82,7 @@ function StudentDash() {
                 });
                 alert("Registration Successful!")
                 closeModal();
-                navigate('/student-profile')
+                navigate('/student/profile')
             } else {
                 return response.json().then(data => {
                     console.error("Failed to enroll!", data.message);
