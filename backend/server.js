@@ -20,61 +20,60 @@ app.use(express.static(path.resolve(__dirname, "../client/dist")));
 // Handle requests from client side
 
 // Checks for student details in database to login. If credentials match in the database, returns succesful message and jwt token
-app.post('/students/login', async (req, res) => {
+// app.post('/students/login', async (req, res) => {
+//     let userCred = req.body;
     
-    let userCred = req.body;
-    
-    try {
+//     try {
         
-        const hasAtSymbol = userCred.username.includes("@");
+//         const hasAtSymbol = userCred.username.includes("@");
         
-        if (hasAtSymbol) {
-            const existingUser = await pool.query('SELECT * FROM students WHERE email = $1', [userCred.email]);
+//         if (hasAtSymbol) {
+//             const existingUser = await pool.query('SELECT * FROM students WHERE email = $1', [userCred.email]);
             
-            if (existingUser.rows.length <= 0) {
-                return res.status(400).json({message: "No Registered Account with that Email"});
-            }
+//             if (existingUser.rows.length <= 0) {
+//                 return res.status(400).json({message: "No Registered Account with that Email"});
+//             }
             
-            bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
+//             bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
                 
-                if (result === true) {
-                    const token = jwt.sign({ username: userCred.username}, process.env.JWT_PASSWORD, {
-                        algorithm: "HS256",
-                        expiresIn: "1h"
-                    });
-                    res.status(200).json({message: "Login Sucess", token: token});
-                }
-                else {
-                    res.status(403).send({message: "Incorrect Password"});
-                }
-            });
+//                 if (result === true) {
+//                     const token = jwt.sign({ username: userCred.username}, process.env.JWT_PASSWORD, {
+//                         algorithm: "HS256",
+//                         expiresIn: "1h"
+//                     });
+//                     res.status(200).json({message: "Login Sucess", token: token});
+//                 }
+//                 else {
+//                     res.status(403).send({message: "Incorrect Password"});
+//                 }
+//             });
             
-        }
-        else {
-            const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [userCred.username]);
+//         }
+//         else {
+//             const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [userCred.username]);
             
-            if (existingUser.rows.length <= 0) {
-                return res.status(400).json({message: "No Registered Account with that Username"});
-            }
+//             if (existingUser.rows.length <= 0) {
+//                 return res.status(400).json({message: "No Registered Account with that Username"});
+//             }
             
-            bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
+//             bcrypt.compare(userCred.password, existingUser.rows[0].password, (err, result) => {
                 
-                if (result === true) {
-                    const token = jwt.sign({ username: userCred.username}, process.env.JWT_PASSWORD, {
-                        algorithm: "HS256",
-                        expiresIn: "1h"
-                    });
-                    res.status(200).json({message: "Login Sucess", token: token});
-                }
-                else {
-                    res.status(403).send({message: "Incorrect Password"});
-                }
-            });
-        }
-    } catch (error) {
-        res.status(500).json({ message: "Internal server error", error: error.mesage});
-    }
-});
+//                 if (result === true) {
+//                     const token = jwt.sign({ username: userCred.username}, process.env.JWT_PASSWORD, {
+//                         algorithm: "HS256",
+//                         expiresIn: "1h"
+//                     });
+//                     res.status(200).json({message: "Login Sucess", token: token});
+//                 }
+//                 else {
+//                     res.status(403).send({message: "Incorrect Password"});
+//                 }
+//             });
+//         }
+//     } catch (error) {
+//         res.status(500).json({ message: "Internal server error", error: error.mesage});
+//     }
+// });
             
 // Creates a new student in the database | Returns a sucessful or unsucessful message
 app.post('/students/create', async (req, res) => {
@@ -790,6 +789,6 @@ app.get("/admin/profile", AuthMiddleware, async (req, res) => {
 });
 
 
-app.listen(PORT => {
-    console.log(`Server listening on port: ${PORT}`);
-});
+app.listen(PORT, () => {
+    console.log("server listening on port", PORT)
+})
