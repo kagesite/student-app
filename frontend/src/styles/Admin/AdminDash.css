@@ -100,7 +100,6 @@
 .course-item:hover {
     color: rgb(50, 159, 91);
     padding: 15px 25px;
-    text-shadow: 2px 2px 1px rgba(50, 159, 91, 0.3);
 }
 .course-item h3 {
     font-size: 18px;
@@ -167,7 +166,6 @@
     padding: 15px 25px;
     border-radius: 12px;
     color: rgb(255, 159, 28);
-    text-shadow: 2px 2px 1px rgba(255, 159, 28, 0.3);
 }
 
 .student-info {

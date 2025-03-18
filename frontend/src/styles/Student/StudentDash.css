@@ -39,10 +39,13 @@ main {
     justify-content: space-between;
     list-style: none;
     transition: 0.2s ease-in-out;
+    cursor: pointer;
 }
 .course-card:hover {
     padding: 45px 35px;
     border-radius: 12px;
+    color: rgb(255, 159, 28);
+    /* text-shadow: 2px 2px 1px rgba(255, 159, 28, 0.3); */
 }
 .course-card h3 {
     font-size: 24px;

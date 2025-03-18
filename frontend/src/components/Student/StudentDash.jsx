@@ -125,7 +125,7 @@ function StudentDash() {
                     <ul className='course-list'>
                         {courses.map(course => {
                             return (
-                                <li key={course.course_id} className='course-card'>
+                                <li key={course.course_id} className='course-card' onClick={() => showCourseDetails(course.course_id)}>
                                     <h3>{course.title}</h3>
                                     <hr className='bar' />
                                     <p><strong>Schedule:</strong> {course.schedule}</p>
