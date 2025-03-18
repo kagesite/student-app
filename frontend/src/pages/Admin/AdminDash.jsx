@@ -20,7 +20,7 @@ function AdminDash() {
         email: "",
         password: "",
     })
-
+    const [isConfirmRemoveStudentModalOpen, setIsConfirmRemoveStudentModalOpen] = useState(false);
     const navigate = useNavigate();
 
     // FETCHING ALL COURSES
@@ -179,6 +179,39 @@ function AdminDash() {
         }
     }
 
+    const showConfirmRemoveStudentModal = () => {
+        setIsConfirmRemoveStudentModalOpen(true);
+    }
+    const closeConfirmRemoveStudentModal = () => {
+        setIsConfirmRemoveStudentModalOpen(false);
+    }
+
+    const handleConfirmRemoveStudent = async (e, student_id,) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem("token");
+        
+        fetch(`http://localhost:3001/students/delete/${student_id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-type": "application/json",
+            },
+            // body: JSON.stringify({ student_id })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.message === 'Deletion Successful') {
+                    alert("Student Deleted Successfully!");
+                    fetchStudents();
+                    closeStudentModal();
+                    closeConfirmRemoveStudentModal();
+                }
+            })
+
+    }
+
 
     return (
         <div>
@@ -266,8 +299,9 @@ function AdminDash() {
                                     <li><strong>Address:</strong> {selectedStudent.address}</li>
                                     <li><strong>Telephone:</strong> {selectedStudent.telephone}</li>
                                 </ul>
-                                <div className="profile-bottom">
+                                <div className="student-modal-bottom">
                                     <button onClick={showEditModal}>Edit Info</button>
+                                    <button onClick={showConfirmRemoveStudentModal}>Remove</button>
                                 </div>
                             </div>
                         </div>
@@ -409,6 +443,23 @@ function AdminDash() {
                                     <button type='submit'>Add Student</button>
                                     {/* {message && <>{message}</>} */}
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isConfirmRemoveStudentModalOpen && (
+                    <div className='modal-overlay'>
+                        <div className="edit-modal">
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeConfirmRemoveStudentModal}>X</button>
+                            </div>
+                            <h2>Confirm your actions</h2>
+                            <div className='logout-modal-btns-container'>
+                                <div className='logout-btns'>
+                                    <button onClick={closeConfirmRemoveStudentModal}>Go Back</button>
+                                    <button onClick={(e) => handleConfirmRemoveStudent(e, selectedStudent.id)}>Remove</button>
+                                </div>
                             </div>
                         </div>
                     </div>

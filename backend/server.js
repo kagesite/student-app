@@ -335,17 +335,19 @@ app.delete('/students/delete/:student_id',
     expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
     async (req, res) => {
 
+        console.log("Received ID:", req.params.id);
+        
         const student_id = req.params.student_id;
 
         try {
 
-            const existingUser = await pool.query('SELECT * FROM students WHERE student_id = $1', [student_id]);
+            const existingUser = await pool.query('SELECT * FROM students WHERE id = $1', [student_id]);
 
             if (existingUser.rows.length <= 0) {
                 return res.status(400).json({ message: "Student Account Does Not Exist" });
             }
             else {
-                const deleteStudent = await pool.query('DELETE FROM students WHERE student_id = $1 RETURNING *', [student_id]);
+                const deleteStudent = await pool.query('DELETE FROM students WHERE id = $1 RETURNING *', [student_id]);
                 return res.status(200).json({ message: "Deletion Successful", student: deleteStudent.rows[0] });
             }
 

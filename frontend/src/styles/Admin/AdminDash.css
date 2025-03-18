@@ -213,3 +213,31 @@
     font-size: 20px;
     margin-bottom: 30px;
 }
+
+.student-modal-bottom {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.student-modal-bottom button {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border: 2px solid #000004;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #000;
+    background-color: #fbfef9;
+}
+
+.student-modal-bottom button:hover {
+    background-color: #FF9F1C;
+    color: white;
+}
+
+.student-modal-bottom button:nth-child(2):hover {
+    background-color: #ff2e1c;
+    color: white;
+}
