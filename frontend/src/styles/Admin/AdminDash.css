@@ -15,7 +15,7 @@
     flex-direction: column;
     overflow-y: scroll;
     padding: 30px;
-    border-radius: 12px;
+    border-radius: 8px;
     background-color: #EBEDEF;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -89,16 +89,18 @@
     justify-content: space-between;
     align-items: center;
     
-    padding: 20px;
+    padding: 15px 20px;
     /* background-color: lightseagreen; */
     background-color: #fbfef9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+    border-radius: 8px;
     transition: 0.2s ease-in-out;
+    cursor: pointer;
 }
 .course-item:hover {
-    padding: 20px 30px;
-    border-radius: 12px;
+    color: rgb(50, 159, 91);
+    padding: 15px 25px;
+    text-shadow: 2px 2px 1px rgba(50, 159, 91, 0.3);
 }
 .course-item h3 {
     font-size: 18px;
@@ -114,7 +116,7 @@
     background-color: #fbfef9;
     color: #000;
     border: 2px solid #000004;
-    border-radius: 12px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     padding: 10px 16px;
@@ -153,16 +155,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 15px 20px;
     /* background-color: lightseagreen; */
     background-color: #fbfef9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     transition: 0.2s ease-in-out;
+    cursor: pointer;
 }
 .student-item:hover {
-    padding: 20px 30px;
+    padding: 15px 25px;
     border-radius: 12px;
+    color: rgb(255, 159, 28);
+    text-shadow: 2px 2px 1px rgba(255, 159, 28, 0.3);
 }
 
 .student-info {
@@ -181,7 +186,7 @@
     background-color: #fbfef9;
     color: #000;
     border: 2px solid #000004;
-    border-radius: 12px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     padding: 10px 16px;

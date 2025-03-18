@@ -355,7 +355,7 @@ function AdminDash() {
                         <ul className='courses-list'>
                             {courses.map(course => {
                                 return (
-                                    <li key={course.course_id} className='course-item'>
+                                    <li key={course.course_id} className='course-item' onClick={() => showCoursesModal(course.course_id)}>
                                         <h3><span>{course.string_id}:</span>{course.title}</h3>
                                         <button onClick={() => showCoursesModal(course.course_id)}>Details</button>
                                     </li>
@@ -373,7 +373,7 @@ function AdminDash() {
                         <ul className='students-list'>
                             {students.map(student => {
                                 return (
-                                    <li key={student.id} className='student-item'>
+                                    <li key={student.id} className='student-item' onClick={() => showStudentsModal(student.id)}>
                                         <div className='student-info'>
                                             <p><span>ID: {student.id}</span>{student.first_name} {student.last_name}</p>
                                         </div>
@@ -722,7 +722,6 @@ function AdminDash() {
                     </div>
                 )}
             </main>
-            <TestFooter />
         </div>
     )
 }
