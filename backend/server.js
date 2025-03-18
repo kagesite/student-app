@@ -70,6 +70,11 @@ app.post('/students/login', async (req, res) => {
                     res.status(403).send({message: "Incorrect Password"});
                 }
             });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.mesage});
+    }
+});
             
 // Creates a new student in the database | Returns a sucessful or unsucessful message
 app.post('/students/create', async (req, res) => {
@@ -245,12 +250,8 @@ app.post('/students/create',
 
             res.status(500).json({ message: "server error" });
         }
-<<<<<<< HEAD
 });
 
-=======
-    });
->>>>>>> kage
 // Searches database for a single student through the student_id search parameter | Returns found student object
 app.get('/students/id/:student_id',
     expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
@@ -463,18 +464,13 @@ app.post('/students/register',
     expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
     async (req, res) => {
 
-<<<<<<< HEAD
         const {username, email, course_id} = req.body;
-=======
-        const { username, email, course_id } = req.body;
->>>>>>> kage
 
         try {
 
             const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [username]);
 
             if (existingUser.rows.length <= 0) {
-<<<<<<< HEAD
                 return res.status(400).json({message: "Student Account not Found"});
             }
 
@@ -487,20 +483,6 @@ app.post('/students/register',
             }
             
             const student_id = existingUser.rows[0].student_id;
-=======
-                return res.status(400).json({ message: "Student Account not Found" });
-            }
-
-            if (existingUser.rows[0].username !== username) {
-                return res.status(400).json({ message: "Incorrect Username" });
-            }
-
-            if (existingUser.rows[0].email !== email) {
-                return res.status(400).json({ message: "Incorrect Email" });
-            }
-
-            const student_id = existingUser.rows[0].id;
->>>>>>> kage
 
             const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
 
@@ -522,18 +504,13 @@ app.post('/students/register',
 app.delete('/students/unregister',
     expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
     async (req, res) => {
-<<<<<<< HEAD
 
         const {username, password,  course_id} = req.body;
-=======
-        const { student_id, course_id } = req.body;
->>>>>>> kage
 
         try {
 
             const existingUser = await pool.query('SELECT * FROM students WHERE username = $1', [username]);
 
-<<<<<<< HEAD
             if (existingUser.rows.length <= 0) {
                 return res.status(400).json({message: "Student Account not Found"});
             }
@@ -563,16 +540,6 @@ app.delete('/students/unregister',
                 }
             });
             
-=======
-            if (existingEnrollment.rows.length <= 0) {
-                return res.status(400).json({ message: "Student is not registered to this course" });
-            }
-            else {
-                const deleteEnrollment = await pool.query('DELETE FROM enrollments WHERE student_id = $1 AND course_id = $2 RETURNING *', [student_id, course_id]);
-                return res.status(200).json({ message: "Unregistration Successful", unregistration: deleteEnrollment.rows[0] });
-            }
-
->>>>>>> kage
         } catch (error) {
             console.log(error);
             return res.status(500).json({ message: "Server Error" });
@@ -794,31 +761,6 @@ app.put('/admin/student/update/:id', AuthMiddleware, async (req, res) => {
         const { first_name, last_name, email, address, telephone, } = result.rows[0];
 
         console.log(first_name, last_name, email, address, telephone);
-
-        // Get existing student record
-        // const studentQuery = 'SELECT first_name, last_name, email, address, telephone FROM students where id = $1';
-        // const { rows } = await pool.query(studentQuery, [studentId]);
-
-        // if (rows.length === 0) {
-        //     return res.status(404).json({ message: "Student not found" });
-        // }
-
-        // const updatedFirstName = first_name || rows[0].first_name;
-        // const updatedLastName = last_name || rows[0].last_name;
-        // const updatedEmail = email || rows[0].email;
-        // const updatedAddress = address || rows[0].address;
-        // const udpatedTelephone = telephone || rows[0].telephone;
-
-        // const updatedQuery = `
-        //     UPDATE students 
-        //     SET first_name = $1, last_name = $2, email = $3, address = $4, telephone = $5
-        //     WHERE id = $6
-        //     RETURNING *
-        // `;
-
-        // const updatedStudent = await pool.query(updatedQuery, [updatedFirstName, updatedLastName, updatedEmail, updatedAddress, udpatedTelephone, studentId]);
-
-        // res.json({ message: "Profile updated successfully", student: updatedStudent.rows[0] })
     } catch (error) {
         console.error('Error updating profile:', error);
         res.status(500).json({ message: "Internal server error" });
@@ -845,11 +787,9 @@ app.get("/admin/profile", AuthMiddleware, async (req, res) => {
         console.error(error);
         res.status(500).json({ message: "Server error", });
     }
-})
+});
 
 
-
-
-app.listen(PORT, () => {
+app.listen(PORT => {
     console.log(`Server listening on port: ${PORT}`);
 });
