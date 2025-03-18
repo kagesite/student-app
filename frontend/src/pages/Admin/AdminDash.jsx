@@ -21,6 +21,18 @@ function AdminDash() {
         password: "",
     })
     const [isConfirmRemoveStudentModalOpen, setIsConfirmRemoveStudentModalOpen] = useState(false);
+    const [isAddCourseModalOpen, setIsAddCourseModalOpen] = useState(false);
+    const [addCourseFormData, setAddCourseFormData] = useState({
+        string_id: "",
+        title: "",
+        description: "",
+        schedule: "",
+        classroom_number: "",
+        maximum_capacity: "",
+        credit_hours: "",
+        tuition_cost: "",
+    })
+    const [isConfirmRemoveCourseModalOpen, setIsConfirmRemoveCourseModalOpen] = useState(false)
     const navigate = useNavigate();
 
     // FETCHING ALL COURSES
@@ -127,10 +139,10 @@ function AdminDash() {
                 body: JSON.stringify(addStudentFormData)
             })
 
-            const data = await response.json();
+            // const data = await response.json();
 
             if (response.ok) {
-                console.log("Admin created student successfully", data);
+                // console.log("Admin created student successfully", data);
                 setAddStudentFormData({
                     username: "",
                     first_name: "",
@@ -161,7 +173,6 @@ function AdminDash() {
     const fetchStudents = () => {
         try {
             const token = localStorage.getItem("token");
-            console.log(token);
             fetch('http://localhost:3001/students', {
                 method: "GET",
                 headers: {
@@ -195,7 +206,7 @@ function AdminDash() {
         e.preventDefault();
 
         const token = localStorage.getItem("token");
-        
+
         fetch(`http://localhost:3001/students/delete/${student_id}`, {
             method: "DELETE",
             headers: {
@@ -218,6 +229,127 @@ function AdminDash() {
     }
 
 
+    // ADD COURSES MODAL
+    const showAddCourseModal = () => {
+        setIsAddCourseModalOpen(true);
+    }
+    const closeAddCourseModal = () => {
+        setIsAddCourseModalOpen(false);
+    }
+    const handleAddCourseChange = (e) => {
+        const { name, value } = e.target;
+        setAddCourseFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }))
+    }
+    const handleAddCourseSubmit = async (e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch("http://localhost:3001/courses/create", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify(addCourseFormData)
+            })
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Admin created course successfull", data)
+                setAddCourseFormData({
+                    string_id: "",
+                    title: "",
+                    description: "",
+                    schedule: "",
+                    classroom_number: "",
+                    maximum_capacity: "",
+                    credit_hours: "",
+                    tuition_cost: "",
+                })
+                alert("Course created successfully!")
+                navigate("/admin/dashboard");
+                fetchCourses();
+                setIsAddCourseModalOpen(false);
+            } else {
+                console.error("Admin failed to create course");
+                setAddCourseFormData({
+                    string_id: "",
+                    title: "",
+                    description: "",
+                    schedule: "",
+                    classroom_number: "",
+                    maximum_capacity: "",
+                    credit_hours: "",
+                    tuition_cost: "",
+                })
+            }
+        } catch (error) {
+            console.error("Error creating course:", error);
+        }
+    }
+    const showConfirmRemoveCourseModal = () => {
+        setIsCoursesModalOpen(false)
+        setIsConfirmRemoveCourseModalOpen(true);
+    }
+    const closeConfirmRemoveCourseModal = () => {
+        setIsConfirmRemoveCourseModalOpen(false);
+    }
+    const goBackFromConfirmRemoveCourseModal = () => {
+        setIsCoursesModalOpen(true);
+        setIsConfirmRemoveCourseModalOpen(false)
+    }
+    const handleConfirmRemoveCourse = async (e, course_id,) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        fetch(`http://localhost:3001/courses/delete/${course_id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-type": "application/json",
+            },
+            // body: JSON.stringify({ student_id })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.message === 'Course successfully deleted') {
+                    alert("Course successfully deleted!");
+                    fetchCourses();
+                    closeCourseModal();
+                    closeConfirmRemoveCourseModal();
+                }
+            })
+
+    }
+
+    const fetchCourses = () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            fetch('http://localhost:3001/courses', {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => setCourses(data))
+                .catch(error => console.error("Error fetching courses:", error));
+        } catch (error) {
+            console.error("Error fetching courses at fetchCourses:", error)
+        }
+    }
+
+
     return (
         <div>
             <AdminDashHeader />
@@ -228,7 +360,7 @@ function AdminDash() {
                         <div className='course-container-head'>
                             <h2>All Courses</h2>
                             <div>
-                                <button>+</button>
+                                <button onClick={showAddCourseModal}>+</button>
                             </div>
                         </div>
                         <ul className='courses-list'>
@@ -280,7 +412,10 @@ function AdminDash() {
                                 <p><strong>Capacity:</strong> {selectedCourse.maximum_capacity}</p>
                                 <p><strong>Credits:</strong> {selectedCourse.credit_hours}</p>
                                 <p><strong>Fee:</strong> ${selectedCourse.tuition_cost}</p>
-                                <button className="view-enrollment-btn" >View Enrollment</button>
+                                <div className="student-modal-bottom">
+                                    <button >Enrollment</button>
+                                    <button onClick={showConfirmRemoveCourseModal}>Remove</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -464,6 +599,133 @@ function AdminDash() {
                                 <div className='logout-btns'>
                                     <button onClick={goBackFromConfirmRemoveStudentModal}>Go Back</button>
                                     <button onClick={(e) => handleConfirmRemoveStudent(e, selectedStudent.id)}>Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* ADD COURSE MODAL */}
+                {isAddCourseModalOpen && (
+                    <div className='modal-overlay'>
+                        <div className="edit-modal add-class-modal">
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeAddCourseModal}>X</button>
+                            </div>
+                            <h2>Add Course</h2>
+                            <div className='edit-form-container add-course-container'>
+                                <form className="edit-form add-course-form" onSubmit={handleAddCourseSubmit}>
+                                    <div>
+                                        <label htmlFor="">ID:</label>
+                                        <input
+                                            type="text"
+                                            name='string_id'
+                                            onChange={handleAddCourseChange}
+                                            value={addCourseFormData.string_id}
+                                            placeholder='ID'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Title</label>
+                                        <input
+                                            type="text"
+                                            name='title'
+                                            onChange={handleAddCourseChange}
+                                            value={addCourseFormData.title}
+                                            placeholder='Title'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Description</label>
+                                        <input
+                                            type="text"
+                                            name='description'
+                                            onChange={handleAddCourseChange}
+                                            value={addCourseFormData.description}
+                                            placeholder='Description'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Schedule</label>
+                                        <input
+                                            type="text"
+                                            name='schedule'
+                                            onChange={handleAddCourseChange}
+                                            value={addCourseFormData.schedule}
+                                            placeholder='Schedule'
+                                            required
+                                        />
+                                    </div>
+                                    <div className='add-course-block'>
+                                        <div className='add-block-input'>
+                                            <label htmlFor="">Room Number</label>
+                                            <input
+                                                type="text"
+                                                name='classroom_number'
+                                                onChange={handleAddCourseChange}
+                                                value={addCourseFormData.number}
+                                                placeholder='Classroom number'
+                                                required
+                                            />
+                                        </div>
+                                        <div className='add-block-input'>
+                                            <label htmlFor="">Max Capacity</label>
+                                            <input
+                                                type="text"
+                                                name='maximum_capacity'
+                                                onChange={handleAddCourseChange}
+                                                value={addCourseFormData.maximum_capacity}
+                                                placeholder='Max capacity'
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='add-course-block'>
+                                        <div className='add-block-input'>
+                                            <label htmlFor="">Credit Hours</label>
+                                            <input
+                                                type="text"
+                                                name='credit_hours'
+                                                onChange={handleAddCourseChange}
+                                                value={addCourseFormData.credit_hours}
+                                                placeholder='Credit Hours'
+                                                required
+                                            />
+                                        </div>
+                                        <div className='add-block-input'>
+                                            <label htmlFor="">Tuition Cost</label>
+                                            <input
+                                                type="text"
+                                                name='tuition_cost'
+                                                onChange={handleAddCourseChange}
+                                                value={addCourseFormData.tuition_cost}
+                                                placeholder='Tuition Cost'
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <button type='submit'>Add Course</button>
+                                    {/* {message && <>{message}</>} */}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isConfirmRemoveCourseModalOpen && (
+                    <div className='modal-overlay'>
+                        <div className="edit-modal">
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeConfirmRemoveCourseModal}>X</button>
+                            </div>
+                            <h2>Confirm your actions</h2>
+                            <div className='logout-modal-btns-container'>
+                                <div className='logout-btns'>
+                                    <button onClick={goBackFromConfirmRemoveCourseModal}>Go Back</button>
+                                    <button onClick={(e) => handleConfirmRemoveCourse(e, selectedCourse.course_id)}>Remove</button>
                                 </div>
                             </div>
                         </div>

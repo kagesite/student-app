@@ -241,3 +241,34 @@
     background-color: #ff2e1c;
     color: white;
 }
+
+
+
+
+
+/* ADD COURSE MODAL */
+.add-class-modal {
+    max-height: 700px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    /* background-color: lightpink; */
+}
+
+.add-course-form {
+    /* background-color: lightpink; */
+    width: 100%;
+}
+
+.add-course-block {
+    /* background-color: lightpink; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.add-block-input {
+    width: 320px;
+    /* background-color: lightblue; */
+}
