@@ -139,6 +139,7 @@ function AdminDash() {
                     password: "",
                 })
                 navigate('/admin/dashboard');
+                fetchStudents();
                 setIsAddStudentModalOpen(false);
             } else {
                 console.error("Admin failed to register student!",);
@@ -156,6 +157,27 @@ function AdminDash() {
         }
     }
 
+    const fetchStudents = () => {
+        try {
+            const token = localStorage.getItem("token");
+            console.log(token);
+            fetch('http://localhost:3001/students', {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Students api returned:", data); // DEBUGGING
+                    setStudents(data);
+                })
+                .catch(error => console.error("Error fetching students:", error));
+        } catch (error) {
+
+        }
+    }
 
 
     return (
@@ -384,7 +406,7 @@ function AdminDash() {
                                             required
                                         />
                                     </div>
-                                    <button type='submit'>Signup</button>
+                                    <button type='submit'>Add Student</button>
                                     {/* {message && <>{message}</>} */}
                                 </form>
                             </div>
