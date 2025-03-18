@@ -130,7 +130,7 @@ function AdminDash() {
             const data = await response.json();
 
             if (response.ok) {
-                console.log("Admin registered student successfully", data);
+                console.log("Admin created student successfully", data);
                 setAddStudentFormData({
                     username: "",
                     first_name: "",
@@ -138,6 +138,7 @@ function AdminDash() {
                     email: "",
                     password: "",
                 })
+                alert("Student created successfully!")
                 navigate('/admin/dashboard');
                 fetchStudents();
                 setIsAddStudentModalOpen(false);
@@ -180,12 +181,16 @@ function AdminDash() {
     }
 
     const showConfirmRemoveStudentModal = () => {
+        setIsStudentsModalOpen(false);
         setIsConfirmRemoveStudentModalOpen(true);
     }
     const closeConfirmRemoveStudentModal = () => {
         setIsConfirmRemoveStudentModalOpen(false);
     }
-
+    const goBackFromConfirmRemoveStudentModal = () => {
+        setIsStudentsModalOpen(true);
+        setIsConfirmRemoveStudentModalOpen(false)
+    }
     const handleConfirmRemoveStudent = async (e, student_id,) => {
         e.preventDefault();
 
@@ -457,7 +462,7 @@ function AdminDash() {
                             <h2>Confirm your actions</h2>
                             <div className='logout-modal-btns-container'>
                                 <div className='logout-btns'>
-                                    <button onClick={closeConfirmRemoveStudentModal}>Go Back</button>
+                                    <button onClick={goBackFromConfirmRemoveStudentModal}>Go Back</button>
                                     <button onClick={(e) => handleConfirmRemoveStudent(e, selectedStudent.id)}>Remove</button>
                                 </div>
                             </div>
