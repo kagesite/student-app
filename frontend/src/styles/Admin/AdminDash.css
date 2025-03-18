@@ -1,0 +1,274 @@
+.admin-container {
+    /* background-color: lightpink; */
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+    max-height: 80vh;
+    
+}
+
+.courses-container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    padding: 30px;
+    border-radius: 12px;
+    background-color: #EBEDEF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-container-head, .student-container-head {
+    /* background: lightpink; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.course-container-head h2, .student-container-head h2{
+    margin: 0;
+}
+.course-container-head button {
+    /* background-color: #fbfef9; */
+    color: #000;
+    border: 2px solid #000004;
+    border-radius: 30px;
+    font-size: 32px;
+    font-weight: 600;
+    padding: 0px 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.course-container-head button:hover {
+    background-color: #329F5b;
+    color: white;
+}
+
+.student-container-head button {
+    color: #fff;
+    background: #329F5b;
+    border: 2px solid #fff;
+    border-radius: 30px;
+    font-size: 32px;
+    font-weight: 600;
+    padding: 0px 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.student-container-head button:hover {
+    background: white;
+    color: #329F5b;
+}
+
+.students-container {
+    width: 50%;
+    border-radius: 12px;
+    background-color: #329F5b;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.students-container h2 {
+    color: white;
+}
+
+.courses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.course-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    padding: 20px;
+    /* background-color: lightseagreen; */
+    background-color: #fbfef9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: 0.2s ease-in-out;
+}
+.course-item:hover {
+    padding: 20px 30px;
+    border-radius: 12px;
+}
+.course-item h3 {
+    font-size: 18px;
+    font-weight: 500;
+}
+.course-item h3 span {
+    margin-right: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic
+}
+.course-item button {
+    background-color: #fbfef9;
+    color: #000;
+    border: 2px solid #000004;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.course-item button:hover {
+    background-color: #000004;
+    color: white;
+}
+
+.view-enrollment-btn {
+    background-color: #fbfef9;
+    color: #000;
+    border: 2px solid #000004;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.view-enrollment-btn:hover {
+    background-color: #000004;
+    color: white;
+}
+
+
+.students-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.student-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    /* background-color: lightseagreen; */
+    background-color: #fbfef9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: 0.2s ease-in-out;
+}
+.student-item:hover {
+    padding: 20px 30px;
+    border-radius: 12px;
+}
+
+.student-info {
+    width: 75%;
+    font-size: 18px;
+    font-weight: 500
+}
+.student-info p span {
+    margin-right: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.student-item button {
+    background-color: #fbfef9;
+    color: #000;
+    border: 2px solid #000004;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.student-item button:hover {
+    background-color: #000004;
+    color: white;
+}
+
+.student-modal-inside {
+    width: 100%;
+    /* background-color: lightpink; */
+}
+
+.student-modal-bar {
+    width: 80%;
+    border: 2px solid gray;
+    margin-bottom: 30px;
+}
+
+.student-modal-info {
+    list-style: none;
+    /* background-color: lightpink; */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.student-modal-bottom {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.student-modal-bottom button {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border: 2px solid #000004;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #000;
+    background-color: #fbfef9;
+}
+
+.student-modal-bottom button:hover {
+    background-color: #FF9F1C;
+    color: white;
+}
+
+.student-modal-bottom button:nth-child(2):hover {
+    background-color: #ff2e1c;
+    color: white;
+}
+
+
+
+
+
+/* ADD COURSE MODAL */
+.add-class-modal {
+    max-height: 700px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    /* background-color: lightpink; */
+}
+
+.add-course-form {
+    /* background-color: lightpink; */
+    width: 100%;
+}
+
+.add-course-block {
+    /* background-color: lightpink; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.add-block-input {
+    width: 320px;
+    /* background-color: lightblue; */
+}

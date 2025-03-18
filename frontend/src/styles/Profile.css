@@ -43,6 +43,7 @@ main {
 .profile-name {
     margin-bottom: 20px;
 }
+
 .logout-btn {
     margin-bottom: 30px;
     font-size: 16px;
@@ -54,6 +55,7 @@ main {
     cursor: pointer;
     transition: 0.2s;
 }
+
 .logout-btn:hover {
     background-color: gray;
     color: white;
@@ -78,17 +80,19 @@ main {
     border-radius: 12px;
     cursor: pointer;
     transition: 0.2s;
-    color: #000;
     background-color: #fbfef9;
 }
+
 .logout-btns button:nth-child(1):hover {
     background-color: #000;
     color: white;
 }
+
 .logout-btns button:nth-child(2):hover {
     background-color: #ff2e1c;
     color: white;
 }
+
 .profile-top .bar {
     width: 100%;
     border: 2px solid black
@@ -102,37 +106,59 @@ main {
     gap: 30px;
 }
 
-.profile-courses {
+.profile-course-container {
     display: flex;
     flex-direction: column;
     gap: 30px;
 }
+
+.profile-courses {
+    display: flex;
+    flex-direction: column;
+    background-color: #329F5b;
+    border-radius: 12px;
+    gap: 30px;
+    padding: 20px;
+    overflow-y: scroll;
+    max-height: 350px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .profile-course {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #EBEDEF;
-    padding: 20px 30px;
+    background-color: #fff;
+    padding: 15px 25px;
     border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .profile-course h3 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
 }
+
 .profile-course button {
     font-size: 16px;
-    font-weight: 600;
-    padding: 5px 8px;
-    border: 2px solid #000004;
-    border-radius: 12px;
+    padding: 4px 8px;
+    color: gray;
+    border: 2px solid gray;
+    border-radius: 8px;
+    background-color: white;
     cursor: pointer;
     transition: 0.2s;
-    color: #000;
-    background-color: #fbfef9;
 }
+
+.profile-course button:hover {
+    background-color: gray;
+    color: white;
+}
+
 .profile-course button:hover {
     background-color: #ff2e1c;
     color: white;
+    border: 2px solid black;
 }
 
 .profile-info {
@@ -155,6 +181,7 @@ main {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
+
 .contact-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -163,7 +190,6 @@ main {
 
 .profile-bottom {
     display: flex;
-    /* background-color: lightpink; */
     width: 80%;
 }
 
@@ -178,12 +204,13 @@ main {
     color: #000;
     background-color: #fbfef9;
 }
+
 .profile-bottom button:hover {
     background-color: #FF9F1C;
     color: white;
 }
 
-.edit-modal{
+.edit-modal {
     position: relative;
     padding: 50px 40px;
     border-radius: 12px;
@@ -201,7 +228,26 @@ main {
     background-color: white;
     color: #000;
 }
+
 .edit-form-container button:hover {
     background-color: #FF9F1C;
     color: white;
+}
+
+.admin-profile-icon {
+    width:100px;
+    height: 100px;
+    border-radius: 60px;
+    border: 4px solid #0f3443;
+    background: linear-gradient(180deg, #34e89e, #0f3443);
+    margin-bottom: 20px;
+}
+
+.student-profile-icon {
+    width:100px;
+    height: 100px;
+    border-radius: 60px;
+    border: 4px solid #45b649;
+    background: linear-gradient(180deg, #dce35b, #45b649);
+    margin-bottom: 20px;
 }
