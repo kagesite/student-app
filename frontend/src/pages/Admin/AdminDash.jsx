@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AdminDashHeader from '../../components/Admin/AdminDashHeader'
 import TestFooter from '../../components/TestFooter'
+import { useNavigate } from 'react-router-dom';
 import '../../styles/Admin/AdminDash.css'
 
 function AdminDash() {
@@ -11,6 +12,16 @@ function AdminDash() {
     const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
     const [isStudentsModalOpen, setIsStudentsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+    const [addStudentFormData, setAddStudentFormData] = useState({
+        username: "",
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+    })
+
+    const navigate = useNavigate();
 
     // FETCHING ALL COURSES
     useEffect(() => {
@@ -89,6 +100,62 @@ function AdminDash() {
         setIsEditModalOpen(false);
     }
 
+    const showAddStudentModal = () => {
+        setIsAddStudentModalOpen(true);
+    }
+    const closeAddStudentModal = () => {
+        setIsAddStudentModalOpen(false);
+    }
+
+    const handleAddStudentChange = (e) => {
+        const { name, value } = e.target;
+        setAddStudentFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }))
+    }
+
+    const handleAddStudentSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:3001/students/create', {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify(addStudentFormData)
+            })
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Admin registered student successfully", data);
+                setAddStudentFormData({
+                    username: "",
+                    first_name: "",
+                    last_name: "",
+                    email: "",
+                    password: "",
+                })
+                navigate('/admin/dashboard');
+                setIsAddStudentModalOpen(false);
+            } else {
+                console.error("Admin failed to register student!",);
+                // alert
+                setAddStudentFormData({
+                    username: "",
+                    first_name: "",
+                    last_name: "",
+                    email: "",
+                    password: "",
+                })
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
 
 
     return (
@@ -119,7 +186,7 @@ function AdminDash() {
                         <div className="student-container-head">
                             <h2>All Students</h2>
                             <div>
-                                <button>+</button>
+                                <button onClick={showAddStudentModal}>+</button>
                             </div>
                         </div>
                         <ul className='students-list'>
@@ -246,6 +313,78 @@ function AdminDash() {
                                         />
                                     </div>
                                     <button type='submit'>Confirm</button>
+                                    {/* {message && <>{message}</>} */}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isAddStudentModalOpen && (
+                    <div className='modal-overlay'>
+                        <div className="edit-modal">
+                            <div className="modal-top">
+                                <button className="close-modal" onClick={closeAddStudentModal}>X</button>
+                            </div>
+                            <h2>Add Student</h2>
+                            <div className='edit-form-container'>
+                                <form className="edit-form" onSubmit={handleAddStudentSubmit}>
+                                    <div>
+                                        <label htmlFor="">Username</label>
+                                        <input
+                                            type="text"
+                                            name='username'
+                                            onChange={handleAddStudentChange}
+                                            value={addStudentFormData.username}
+                                            placeholder='Username'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">First Name</label>
+                                        <input
+                                            type="text"
+                                            name='first_name'
+                                            onChange={handleAddStudentChange}
+                                            value={addStudentFormData.first_name}
+                                            placeholder='First name'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Last Name</label>
+                                        <input
+                                            type="text"
+                                            name='last_name'
+                                            onChange={handleAddStudentChange}
+                                            value={addStudentFormData.last_name}
+                                            placeholder='Last name'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Email</label>
+                                        <input
+                                            type="text"
+                                            name='email'
+                                            onChange={handleAddStudentChange}
+                                            value={addStudentFormData.email}
+                                            placeholder='Email'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">Password</label>
+                                        <input
+                                            type="password"
+                                            name='password'
+                                            onChange={handleAddStudentChange}
+                                            value={addStudentFormData.password}
+                                            placeholder='Password'
+                                            required
+                                        />
+                                    </div>
+                                    <button type='submit'>Signup</button>
                                     {/* {message && <>{message}</>} */}
                                 </form>
                             </div>
