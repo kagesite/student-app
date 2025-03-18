@@ -18,6 +18,10 @@ function StudentProfile() {
         address: "",
         telephone: "",
     })
+    const [unregisterFormData, setUnregisterFormData] = useState({
+        username: "",
+        password: "",
+    })
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -150,34 +154,45 @@ function StudentProfile() {
         setIsUnregisteredModalOpen(false);
         setUnregisterCourse(null);
     }
-    const handleUnregistration = (e, student_id, course_id) => {
-        e.preventDefault()
+    const handleUnregisterChange = (e) => {
+        const { name, value } = e.target;
+        setUnregisterFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }))
+    }
+    const handleUnregisterSubmit = async (e, course_id) => {
+        e.preventDefault();
 
-        console.log(student_id);
-        console.log(course_id);
+        const token = localStorage.getItem("token");
 
-        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch("http://localhost:3001/students/unregister", {
+                method: "DELETE",
+                headers: {
+                    'Content-type': "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    username: unregisterFormData.username,
+                    password: unregisterFormData.password,
+                    course_id
+                })
+            });
 
-        fetch('http://localhost:3001/students/unregister', {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({ student_id, course_id }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.message === "Unregistration Successful") {
-                    // setProfileCourses(prevCourses => prevCourses.filter(course => course.course_id !== course_id))
-                    fetchCourses();
-                    closeUnregisterModal();
-                }
-            })
-            .catch(error => {
-                console.error("Error unregistering from coures:", error);
-            })
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to unregister")
+            }
+            fetchCourses();
+            alert("Unregistration Successful!");
+            closeUnregisterModal();
+            setUnregisterFormData({ username: "", password: "" });
+        } catch (error) {
+            console.error("Error:", error.message);
+            alert(error.message);
+        }
     }
 
     const fetchCourses = () => {
@@ -216,7 +231,7 @@ function StudentProfile() {
                 <div className="main-container">
                     <div className="profile-container">
                         <div className="profile-top">
-                        <div className='student-profile-icon'></div>
+                            <div className='student-profile-icon'></div>
                             <h3 className='profile-name'>{loading ? 'Loading...' : profileData?.username}</h3>
                             <button className='logout-btn' onClick={showLogoutModal}>Logout</button>
                             <hr className="bar" />
@@ -352,14 +367,14 @@ function StudentProfile() {
                             </div>
                             <h2>Unregister from course</h2>
                             <div className='edit-form-container'>
-                                <form className='edit-form' onSubmit={(e) => handleUnregistration(e, profileData.id, unregisterCourse.course_id)}>
+                                <form className='edit-form' onSubmit={(e) => handleUnregisterSubmit(e, unregisterCourse.course_id)}>
                                     <div>
                                         <label htmlFor="">Username</label>
                                         <input
                                             type="text"
                                             name='username'
-                                            // onChange={}
-                                            // value={}
+                                            onChange={handleUnregisterChange}
+                                            value={unregisterFormData.username}
                                             placeholder='Username'
                                             required
                                         />
@@ -369,8 +384,8 @@ function StudentProfile() {
                                         <input
                                             type="password"
                                             name='password'
-                                            // onChange={}
-                                            // value={}
+                                            onChange={handleUnregisterChange}
+                                            value={unregisterFormData.password}
                                             placeholder='Password'
                                             required
                                         />

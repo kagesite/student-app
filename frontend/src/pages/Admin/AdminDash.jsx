@@ -94,17 +94,6 @@ function AdminDash() {
         setEditStudent(editStudent);
         console.log(editStudent.username);
 
-
-        // if (editStudent) {
-        //     setEditProfileData({
-        //         first_name: editStudent.first_name || "",
-        //         last_name: editStudent.last_name || "",
-        //         email: editStudent.email || "",
-        //         address: editStudent.address || "",
-        //         telephone: editStudent.telephone || "",
-        //     })
-
-        // }
         setIsCoursesModalOpen(false);
         setIsEditModalOpen(true);
     }
@@ -304,7 +293,7 @@ function AdminDash() {
         setIsCoursesModalOpen(true);
         setIsConfirmRemoveCourseModalOpen(false)
     }
-    const handleConfirmRemoveCourse = async (e, course_id,) => {
+    const handleConfirmRemoveCourse = (e, course_id,) => {
         e.preventDefault();
 
         const token = localStorage.getItem("token");
@@ -432,6 +421,7 @@ function AdminDash() {
                                 <h2>{selectedStudent.first_name} {selectedStudent.last_name}</h2>
                                 <hr className='student-modal-bar' />
                                 <ul className='student-modal-info'>
+                                    <li><strong>ID:</strong> {selectedStudent.id}</li>
                                     <li><strong>Username:</strong> {selectedStudent.username}</li>
                                     <li><strong>First Name:</strong> {selectedStudent.first_name}</li>
                                     <li><strong>Last Name:</strong> {selectedStudent.last_name}</li>

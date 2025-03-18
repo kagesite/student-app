@@ -481,7 +481,9 @@ app.post('/students/register',
                 return res.status(400).json({message: "Incorrect Email"});
             }
             
-            const student_id = existingUser.rows[0].student_id;
+            // const student_id = existingUser.rows[0].student_id;
+            // Changed student_id to id for local table;
+            const student_id = existingUser.rows[0].id;
 
             const existingRegistration = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
 
@@ -504,7 +506,7 @@ app.delete('/students/unregister',
     expressjwt({ secret: process.env.JWT_PASSWORD, algorithms: ["HS256"] }),
     async (req, res) => {
 
-        const {username, password,  course_id} = req.body;
+        const {username, password, course_id} = req.body;
 
         try {
 
@@ -525,7 +527,9 @@ app.delete('/students/unregister',
                     return res.status(400).json({message: "Incorrect Password"});
                 }
                 else {
-                    const student_id = existingUser.rows[0].student_id;
+                    // const student_id = existingUser.rows[0].student_id;
+                    // CHANGED student_id to id for my local table
+                    const student_id = existingUser.rows[0].id;
 
                     const existingEnrollment = await pool.query('SELECT * FROM enrollments WHERE student_id = $1 AND course_id = $2', [student_id, course_id]);
 
