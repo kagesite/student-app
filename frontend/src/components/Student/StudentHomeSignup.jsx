@@ -40,7 +40,8 @@ function StudentHomeSignup() {
                     email: "",
                     password: "",
                 });
-                navigate('/student/dashboard');
+                alert('Signup Successful! Please login now.');
+                navigate('/student/login');
             } else {
                 console.error("Failed to registered student!")
                 alert("Username or email are already linked to an account. Try again")
