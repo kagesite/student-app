@@ -120,7 +120,7 @@ function StudentDash() {
         <div>
             <StudentDashHeader />
             <main>
-                <h1 className='page-title'>Student Dashboard</h1>
+                <h1 className='page-title'>Courses Dashboard</h1>
                 <div className="course-container">
                     <ul className='course-list'>
                         {courses.map(course => {
