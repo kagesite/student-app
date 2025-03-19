@@ -696,7 +696,7 @@ app.post('/students/login', async (req, res) => {
 
 app.get("/student/profile", AuthMiddleware, async (req, res) => {
     try {
-        console.log("Decoded JWT user:", req.user.id);
+        // console.log("Decoded JWT user:", req.user.id);
 
         const user = await pool.query(
             "SELECT * FROM students WHERE id = $1", [req.user.id]
@@ -772,7 +772,7 @@ app.put('/admin/student/update/:id', AuthMiddleware, async (req, res) => {
 
 app.get("/admin/profile", AuthMiddleware, async (req, res) => {
     try {
-        console.log("Decoded JWT Admin:", req.user.id);
+        // console.log("Decoded JWT Admin:", req.user.id);
 
         const user = await pool.query(
             "SELECT * FROM admins WHERE id = $1", [req.user.id]
