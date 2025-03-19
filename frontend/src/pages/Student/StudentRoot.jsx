@@ -19,7 +19,7 @@ function StudentRoot() {
                     <StudentHomeLogin />
                 </div>
             </div>
-            <TestFooter />
+            {/* <TestFooter /> */}
         </div>
     )
 }

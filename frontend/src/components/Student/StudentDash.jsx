@@ -195,7 +195,7 @@ function StudentDash() {
                     </div>
                 )}
             </main>
-            <TestFooter />
+            {/* <TestFooter /> */}
         </div>
     )
 }
