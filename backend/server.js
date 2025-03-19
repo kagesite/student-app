@@ -140,7 +140,7 @@ app.post('/students/create',
                         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [username, email, hashedPassword, firstname, lastname, telephone, address]
                     );
             
-                    res.status(201).json({ message: "Student registered sucessfully", student: newStudent.rows[0]});
+                    res.status(200).json({ message: "Student registered sucessfully", student: newStudent.rows[0]});
 
                 });
             });
@@ -402,7 +402,7 @@ app.delete('/students/unregister',
     expressjwt({secret: process.env.JWT_PASSWORD, algorithms: ["HS256"]}),
     async (req, res) => {
 
-        const {username, password,  course_id} = req.body;
+        const {username, password, course_id} = req.body;
 
         try {
 
